@@ -7,6 +7,8 @@ const connection = await mysql.createConnection({
   database: process.env.SQL_DATABASE || "csdl",
   user: process.env.SQL_USER || "root",
   password: process.env.SQL_PASSWORD || "root",
+  port: parseInt(process.env.SQL_PORT || "3306"),
+  uri: process.env.SQL_URI || "mysql://root:root@localhost:3306/csdl",
 });
 
 // Function to get all customers
