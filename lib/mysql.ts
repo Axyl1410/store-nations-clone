@@ -3,32 +3,39 @@ import mysql from "mysql2/promise";
 
 // Create the connection to database
 const connection = await mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "test",
-  password: "password",
+  host: process.env.SQL_HOST || "localhost",
+  database: process.env.SQL_DATABASE || "csdl",
+  user: process.env.SQL_USER || "root",
+  password: process.env.SQL_PASSWORD || "root",
 });
 
-// A simple SELECT query
-try {
-  const [results, fields] = await connection.query(
-    'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45',
-  );
-
-  console.log(results); // results contains rows returned by server
-  console.log(fields); // fields contains extra meta data about results, if available
-} catch (err) {
-  console.log(err);
+// Function to get all customers
+export async function getAllCustomers() {
+  try {
+    const [rows] = await connection.execute("SELECT * FROM Customers");
+    return rows;
+  } catch (error) {
+    console.error("Error fetching all customers:", error);
+    throw error;
+  }
 }
 
-// Using placeholders
-try {
-  const [results] = await connection.query(
-    "SELECT * FROM `table` WHERE `name` = ? AND `age` > ?",
-    ["Page", 45],
-  );
-
-  console.log(results);
-} catch (err) {
-  console.log(err);
+// Function to login with email and password
+export async function loginWithEmailAndPassword(
+  email: string,
+  password: string,
+) {
+  try {
+    // Query to find user with matching email and password
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM Customers WHERE Email = ? and Password = ? LIMIT 1",
+      [email, password],
+    );
+    return rows[0] as { id: number; Email: string; Password: string };
+  } catch (error) {
+    console.error("Error logging in with email and password:", error);
+    throw error;
+  }
 }
+
+//Todo make function for signup
