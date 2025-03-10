@@ -36,7 +36,7 @@ export function LoginForm({
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/login", {
+      const response = await axios.post("/api/public/login", {
         email,
         password,
       });

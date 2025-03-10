@@ -13,20 +13,20 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret-key";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const Validation = loginSchema.safeParse(body);
+    const validation = loginSchema.safeParse(body);
 
-    if (!Validation.success) {
+    if (!validation.success) {
       return NextResponse.json(
         {
           success: false,
-          message: "Validation failed",
-          errors: Validation.error.flatten().fieldErrors,
+          message: "validation failed",
+          errors: validation.error.flatten().fieldErrors,
         },
         { status: 400 },
       );
     }
 
-    const { email, password } = Validation.data;
+    const { email, password } = validation.data;
     const result = await loginWithEmailAndPassword(email, password);
 
     if (result) {

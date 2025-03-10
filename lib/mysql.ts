@@ -67,3 +67,73 @@ export async function createCustomer(
     throw error;
   }
 }
+
+export async function updateCustomer(
+  id: number,
+  fullname: string,
+  email: string,
+  phone: string,
+  address: string,
+) {
+  try {
+    const [rows] = await connection.execute(
+      "UPDATE Customers SET FullName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE ID = ?",
+      [fullname, email, phone, address, id],
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteCustomer(id: number) {
+  try {
+    const [rows] = await connection.execute(
+      "DELETE FROM Customers WHERE ID = ?",
+      [id],
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getCustomerById(id: number) {
+  try {
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM Customers WHERE ID = ?",
+      [id],
+    );
+    return rows[0] || null;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getAllOrders() {
+  try {
+    const [rows] = await connection.execute("SELECT * FROM Orders");
+    return rows;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    throw error;
+  }
+}
+
+export async function createOrder(
+  customerId: number,
+  total: number,
+  status: string,
+) {
+  try {
+    const createdAt = new Date();
+
+    const [rows] = await connection.execute(
+      "INSERT INTO Orders (CustomerID, Total, Status, CreateAt) VALUES (?, ?, ?, ?)",
+      [customerId, total, status, createdAt],
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}

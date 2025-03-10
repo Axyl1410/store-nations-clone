@@ -4,8 +4,6 @@ import { verifyAuthToken } from "./lib/auth";
 const PUBLIC_PATHS = [
   "/login",
   "/signup",
-  "/api/login",
-  "/api/register",
   "/_next",
   "/favicon.ico",
   "/api/public",
