@@ -11,6 +11,8 @@ const connection = await mysql.createConnection({
   uri: process.env.SQL_URI || "mysql://root:root@localhost:3306/csdl",
 });
 
+//#region 1. Customers
+
 // Function to get all customers
 export async function getAllCustomers() {
   try {
@@ -37,7 +39,7 @@ export async function loginWithEmailAndPassword(
     const user = rows[0] || null;
 
     // If no user found or password doesn't match
-    if (!user || !(await bcrypt.compare(password, user.Password))) return null;
+    if (!user || !bcrypt.compare(password, user.Password)) return null;
 
     return user;
   } catch (error) {
@@ -110,6 +112,9 @@ export async function getCustomerById(id: number) {
   }
 }
 
+//#endregion
+//#region 2. Orders
+
 export async function getAllOrders() {
   try {
     const [rows] = await connection.execute("SELECT * FROM Orders");
@@ -137,3 +142,5 @@ export async function createOrder(
     throw error;
   }
 }
+
+//#endregion

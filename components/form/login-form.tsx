@@ -61,7 +61,9 @@ export function LoginForm({
         "Login error:",
         error instanceof Error ? error.message : error,
       );
-      toast.error("An error occurred during login");
+      toast.error("An error occurred during login", {
+        description: error instanceof Error ? error.message : String(error),
+      });
     } finally {
       setLoading(false);
     }
@@ -137,10 +139,6 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:hover:cursor-not-allowed">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }

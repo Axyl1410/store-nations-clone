@@ -3,7 +3,7 @@ import { verifyAuthToken } from "./lib/auth";
 
 const PUBLIC_PATHS = [
   "/login",
-  "/signup",
+  "/sign-up",
   "/_next",
   "/favicon.ico",
   "/api/public",

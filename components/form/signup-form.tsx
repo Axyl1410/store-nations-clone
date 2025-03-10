@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,24 +10,74 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
+import axios from "@/lib/axios-config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  async function handleSignIn(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await axios.post("/api/public/register", {
+        firstName,
+        lastName,
+        email,
+        password,
+        phone,
+        address,
+      });
+
+      toast.success("Account created successfully!");
+    } catch (error: unknown) {
+      console.error(
+        "Login error:",
+        error instanceof Error ? error.message : error,
+      );
+      toast.error("An error occurred during login", {
+        description: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setLoading(false);
+      setOpen(true);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="border shadow-sm">
-        <CardHeader className="space-y-1 text-center">
+        <CardHeader className="text-center">
           <CardTitle className="text-xl">Create an account</CardTitle>
           <CardDescription>
             Sign up to get started with our services
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSignIn}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-3">
                 <Button
@@ -62,6 +114,7 @@ export function SignUpForm({
                       id="firstName"
                       type="text"
                       placeholder="John"
+                      onChange={(e) => setFirstName(e.target.value)}
                       required
                     />
                   </div>
@@ -71,6 +124,7 @@ export function SignUpForm({
                       id="lastName"
                       type="text"
                       placeholder="Doe"
+                      onChange={(e) => setLastName(e.target.value)}
                       required
                     />
                   </div>
@@ -81,6 +135,7 @@ export function SignUpForm({
                     id="email"
                     type="email"
                     placeholder="example@email.com"
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -91,7 +146,12 @@ export function SignUpForm({
                       Password requirements
                     </p>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone number</Label>
@@ -99,6 +159,7 @@ export function SignUpForm({
                     id="phone"
                     type="tel"
                     placeholder="+1 (555) 000-0000"
+                    onChange={(e) => setPhone(e.target.value)}
                     required
                   />
                 </div>
@@ -108,11 +169,16 @@ export function SignUpForm({
                     id="address"
                     type="text"
                     placeholder="1234 Main St"
+                    onChange={(e) => setAddress(e.target.value)}
                     required
                   />
                 </div>
-                <Button type="submit" className="mt-2 w-full">
-                  Create Account
+                <Button
+                  type="submit"
+                  className="mt-2 w-full"
+                  disabled={loading}
+                >
+                  {loading ? "Creating account..." : "Create Account"}
                 </Button>
               </div>
               <div className="text-center text-sm">
@@ -128,10 +194,24 @@ export function SignUpForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:cursor-not-allowed">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
+
+      <ResponsiveDialog open={open} onOpenChange={setOpen}>
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>Navigator to Login</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>
+            You are about to be redirected to the login page
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
+
+        <p className="pl-4 md:pl-0">Do you want go to login?</p>
+
+        <ResponsiveDialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => router.push("/login")}>Continue</Button>
+        </ResponsiveDialogFooter>
+      </ResponsiveDialog>
     </div>
   );
 }

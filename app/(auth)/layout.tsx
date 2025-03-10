@@ -16,6 +16,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           Axyl Inc.
         </a>
         {children}
+        <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:cursor-not-allowed">
+          By clicking continue, you agree to our{" "}
+          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </div>
       </div>
     </div>
   );
