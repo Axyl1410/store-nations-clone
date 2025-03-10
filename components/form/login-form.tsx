@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,13 +10,63 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { logout } from "@/lib/auth";
+import axios from "@/lib/axios-config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    logout();
+  }, []);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post("/api/login", {
+        email,
+        password,
+      });
+
+      console.log("Login response:", response);
+
+      const data = response.data;
+
+      if (data) {
+        document.cookie = `authToken=${data.token}; path=/; max-age=${6 * 60 * 60}; SameSite=Lax`;
+
+        toast.success("Login successful!");
+        // Check for redirect param and use it
+        const params = new URLSearchParams(window.location.search);
+        const redirectPath = params.get("redirect") || "/";
+        router.push(redirectPath);
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (error: unknown) {
+      console.error(
+        "Login error:",
+        error instanceof Error ? error.message : error,
+      );
+      toast.error("An error occurred during login");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -23,12 +75,12 @@ export function LoginForm({
           <CardDescription>Login with your Discord account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" disabled className="w-full">
                   <svg
-                    className="mr-2 h-4 w-4"
+                    className="h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 127.14 96.36"
                     fill="currentColor"
@@ -50,6 +102,7 @@ export function LoginForm({
                     id="email"
                     type="email"
                     placeholder="m@example.com"
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -63,10 +116,15 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Logging in..." : "Login"}
                 </Button>
               </div>
               <div className="text-center text-sm">
@@ -79,16 +137,9 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Privacy Policy
-        </a>
-        .
+      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:hover:cursor-not-allowed">
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        and <a href="#">Privacy Policy</a>.
       </div>
     </div>
   );

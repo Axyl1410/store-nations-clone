@@ -2,7 +2,6 @@ import { jwtVerify } from "jose";
 
 export async function verifyAuthToken(token: string | undefined): Promise<{
   valid: boolean;
-  username?: string;
   error?: string;
 }> {
   if (!token) return { valid: false, error: "No token provided" };
@@ -12,11 +11,10 @@ export async function verifyAuthToken(token: string | undefined): Promise<{
       process.env.JWT_SECRET || "secret-key",
     );
 
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    await jwtVerify(token, JWT_SECRET);
 
     return {
       valid: true,
-      username: payload.username as string,
     };
   } catch (error) {
     console.error("Token verification failed:", error);

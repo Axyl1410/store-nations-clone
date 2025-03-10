@@ -1,4 +1,4 @@
-import { getAllCustomers } from "@/lib/mysql";
+import { closeConnection, getAllCustomers } from "@/lib/mysql";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -11,5 +11,7 @@ export async function GET() {
       { success: false, message: "An error occurred during login" },
       { status: 500 },
     );
+  } finally {
+    await closeConnection();
   }
 }

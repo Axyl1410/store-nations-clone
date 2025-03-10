@@ -19,9 +19,7 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="border shadow-sm">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-semibold">
-            Create an account
-          </CardTitle>
+          <CardTitle className="text-xl">Create an account</CardTitle>
           <CardDescription>
             Sign up to get started with our services
           </CardDescription>
@@ -36,7 +34,7 @@ export function SignUpForm({
                   className="hover:bg-accent relative w-full overflow-hidden transition-all"
                 >
                   <svg
-                    className="mr-2 h-4 w-4"
+                    className="h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 127.14 96.36"
                     fill="currentColor"
@@ -130,16 +128,9 @@ export function SignUpForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Privacy Policy
-        </a>
-        .
+      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:cursor-not-allowed">
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        and <a href="#">Privacy Policy</a>.
       </div>
     </div>
   );

@@ -40,4 +40,13 @@ export async function loginWithEmailAndPassword(
   }
 }
 
+export async function closeConnection() {
+  try {
+    await connection.end();
+  } catch (error) {
+    console.error("Error closing connection:", error);
+    throw error;
+  }
+}
+
 //Todo make function for signup

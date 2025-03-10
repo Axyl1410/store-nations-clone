@@ -1,4 +1,5 @@
-import { loginWithEmailAndPassword } from "@/lib/mysql";
+import { closeConnection, loginWithEmailAndPassword } from "@/lib/mysql";
+import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -7,7 +8,7 @@ const loginSchema = z.object({
   password: z.string().min(6).nonempty(),
 });
 
-//todo add jwt token
+const JWT_SECRET = process.env.JWT_SECRET || "secret-key";
 
 export async function POST(request: Request) {
   try {
@@ -28,12 +29,30 @@ export async function POST(request: Request) {
     const { email, password } = res.data;
     const result = await loginWithEmailAndPassword(email, password);
 
-    return NextResponse.json({ data: result }, { status: 200 });
+    if (result) {
+      const expiresIn = 6 * 60 * 60; // 6 hours in seconds
+      const expirationTime = Math.floor(Date.now() / 1000) + expiresIn;
+
+      const token = sign(
+        {
+          exp: expirationTime,
+        },
+        JWT_SECRET,
+      );
+      return NextResponse.json({ result, token }, { status: 200 });
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Login failed" },
+        { status: 401 },
+      );
+    }
   } catch (error) {
     console.error("Error getting customers:", error);
     return NextResponse.json(
       { success: false, message: "An error occurred during login" },
       { status: 500 },
     );
+  } finally {
+    await closeConnection();
   }
 }
