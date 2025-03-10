@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { logout } from "@/lib/auth";
 import axios from "@/lib/axios-config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -28,7 +27,8 @@ export function LoginForm({
   const router = useRouter();
 
   useEffect(() => {
-    logout();
+    document.cookie =
+      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
   }, []);
 
   async function handleLogin(e: React.FormEvent) {

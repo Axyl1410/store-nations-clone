@@ -1,4 +1,4 @@
-// Get the client
+import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
 
 // Create the connection to database
@@ -28,25 +28,42 @@ export async function loginWithEmailAndPassword(
   password: string,
 ) {
   try {
-    // Query to find user with matching email and password
+    // First find user with the email only
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      "SELECT * FROM Customers WHERE Email = ? and Password = ? LIMIT 1",
-      [email, password],
+      "SELECT * FROM Customers WHERE Email = ? LIMIT 1",
+      [email],
     );
-    return rows[0] as { id: number; Email: string; Password: string };
+
+    const user = rows[0] || null;
+
+    // If no user found or password doesn't match
+    if (!user || !(await bcrypt.compare(password, user.Password))) return null;
+
+    return user;
   } catch (error) {
     console.error("Error logging in with email and password:", error);
     throw error;
   }
 }
 
-export async function closeConnection() {
+export async function createCustomer(
+  fullname: string,
+  email: string,
+  password: string,
+  phone: string,
+  address: string,
+) {
   try {
-    await connection.end();
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const createdAt = new Date();
+
+    const [rows] = await connection.execute(
+      "INSERT INTO Customers (FullName, Email, Password, PhoneNumber, Address, CreateAt) VALUES (?, ?, ?, ?, ?, ?)",
+      [fullname, email, hashedPassword, phone, address, createdAt],
+    );
+    return rows;
   } catch (error) {
-    console.error("Error closing connection:", error);
     throw error;
   }
 }
-
-//Todo make function for signup

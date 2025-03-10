@@ -1,4 +1,4 @@
-import { closeConnection, loginWithEmailAndPassword } from "@/lib/mysql";
+import { loginWithEmailAndPassword } from "@/lib/mysql";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -13,20 +13,20 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret-key";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const res = loginSchema.safeParse(body);
+    const Validation = loginSchema.safeParse(body);
 
-    if (!res.success) {
+    if (!Validation.success) {
       return NextResponse.json(
         {
           success: false,
           message: "Validation failed",
-          errors: res.error.flatten().fieldErrors,
+          errors: Validation.error.flatten().fieldErrors,
         },
         { status: 400 },
       );
     }
 
-    const { email, password } = res.data;
+    const { email, password } = Validation.data;
     const result = await loginWithEmailAndPassword(email, password);
 
     if (result) {
@@ -52,7 +52,5 @@ export async function POST(request: Request) {
       { success: false, message: "An error occurred during login" },
       { status: 500 },
     );
-  } finally {
-    await closeConnection();
   }
 }

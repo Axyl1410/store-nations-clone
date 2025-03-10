@@ -8,6 +8,7 @@ CREATE TABLE Customers (
     Password VARCHAR(255) NOT NULL,
     PhoneNumber VARCHAR(20) UNIQUE,
     Address VARCHAR(500),
+    CreateAt DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE Products (
