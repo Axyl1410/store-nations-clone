@@ -21,7 +21,7 @@ import axios from "@/lib/axios-config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function SignUpForm({
@@ -35,8 +35,13 @@ export function SignUpForm({
   const [lastName, setLastName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(true);
   const router = useRouter();
+
+  useEffect(() => {
+    document.cookie =
+      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }, []);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -134,7 +139,7 @@ export function SignUpForm({
                   <Input
                     id="email"
                     type="email"
-                    placeholder="example@email.com"
+                    placeholder="your@email.address"
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
@@ -199,11 +204,9 @@ export function SignUpForm({
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>Navigator to Login</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
-            You are about to be redirected to the login page
+            Do you want go to login?
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
-
-        <p className="pl-4 md:pl-0">Do you want go to login?</p>
 
         <ResponsiveDialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
