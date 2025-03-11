@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -25,15 +26,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-secondary text-primary min-h-screen font-[family-name:var(--font-geist-sans)] antialiased",
+          "bg-background text-foreground min-h-screen font-[family-name:var(--font-geist-sans)] antialiased",
           geistSans.variable,
           geistMono.variable,
         )}
       >
-        <main>{children}</main>
+        <ThemeProvider defaultTheme="system">
+          <main>{children}</main>
+        </ThemeProvider>
         <Toaster closeButton position="top-right" />
       </body>
     </html>

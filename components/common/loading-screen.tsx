@@ -3,7 +3,7 @@ import styles from "@/styles/loading-screen.module.scss";
 
 const LoadingScreen = () => {
   return (
-    <div className="bg-secondary dark:bg-primary fixed top-0 left-0 z-30 h-full w-full">
+    <div className="bg-background fixed top-0 left-0 z-30 h-full w-full">
       <svg
         className={cn(styles["lds-ripple"], styles.tea)}
         width="37"
