@@ -11,7 +11,7 @@ export default function GlobalError({
     // global-error must include html and body tags
     <html>
       <body>
-        <div className="bg-secondary text-primary flex h-screen w-full flex-col items-center justify-center gap-4">
+        <div className="bg-background text-primary flex h-screen w-full flex-col items-center justify-center gap-4">
           <h2>Something went wrong!</h2>
           <p className="max-w-3xl text-center text-sm/6 text-balance">
             {error.message}
