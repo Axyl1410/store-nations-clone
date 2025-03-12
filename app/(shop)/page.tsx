@@ -5,9 +5,7 @@ import { useCounterStore } from "@/providers/counter-store-provider";
 import Image from "next/image";
 
 export default function Home() {
-  const { count, incrementCount, decrementCount } = useCounterStore(
-    (state) => state,
-  );
+  const { incrementCount, decrementCount } = useCounterStore((state) => state);
 
   return (
     <>
@@ -107,7 +105,6 @@ export default function Home() {
         </footer>
       </div>
       <div className="flex flex-col items-center justify-center">
-        Count: {count}
         <div className="flex gap-2 pb-10">
           <Button type="button" onClick={incrementCount}>
             Increment Count

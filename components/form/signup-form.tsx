@@ -35,7 +35,7 @@ export function SignUpForm({
   const [lastName, setLastName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -58,6 +58,7 @@ export function SignUpForm({
       });
 
       toast.success("Account created successfully!");
+      setOpen(true);
     } catch (error: unknown) {
       console.error(
         "Login error:",
@@ -68,7 +69,6 @@ export function SignUpForm({
       });
     } finally {
       setLoading(false);
-      setOpen(true);
     }
   }
 

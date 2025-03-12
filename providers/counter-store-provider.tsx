@@ -1,13 +1,9 @@
 "use client";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import { type ReactNode, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
-import {
-  type CounterStore,
-  createCounterStore,
-  initCounterStore,
-} from "@/stores/counter-store";
+import { type CounterStore, createCounterStore } from "@/stores/counter-store";
 
 export type CounterStoreApi = ReturnType<typeof createCounterStore>;
 
@@ -24,7 +20,7 @@ export const CounterStoreProvider = ({
 }: CounterStoreProviderProps) => {
   const storeRef = useRef<CounterStoreApi>(null);
   if (!storeRef.current) {
-    storeRef.current = createCounterStore(initCounterStore());
+    storeRef.current = createCounterStore();
   }
 
   return (
