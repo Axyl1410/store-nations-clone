@@ -43,7 +43,6 @@ export async function loginWithEmailAndPassword(
 
     return user;
   } catch (error) {
-    console.error("Error logging in with email and password:", error);
     throw error;
   }
 }
@@ -120,7 +119,6 @@ export async function getAllOrders() {
     const [rows] = await connection.execute("SELECT * FROM Orders");
     return rows;
   } catch (error) {
-    console.error("Error fetching all orders:", error);
     throw error;
   }
 }
@@ -151,7 +149,6 @@ export async function getAllProducts() {
     const [rows] = await connection.execute("SELECT * FROM Products");
     return rows;
   } catch (error) {
-    console.error("Error fetching all products:", error);
     throw error;
   }
 }
@@ -165,7 +162,7 @@ export async function createProduct(
   description?: string,
 ) {
   try {
-    const [result] = await connection.execute(
+    const [row] = await connection.execute(
       "INSERT INTO Products (ProductName, Category, Price, StockQuantity, ImageURL, Description) VALUES (?, ?, ?, ?, ?, ?)",
       [
         productName,
@@ -176,9 +173,48 @@ export async function createProduct(
         description || null,
       ],
     );
-    return result;
+    return row;
   } catch (error) {
-    console.error("Error creating product:", error);
+    throw error;
+  }
+}
+
+export async function getProductById(id: number) {
+  try {
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM Products WHERE ProductID = ?",
+      [id],
+    );
+    return rows[0] || null;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateProduct(
+  id: number,
+  productName: string,
+  category: string,
+  price: number,
+  stockQuantity: number,
+  imageUrl?: string,
+  description?: string,
+) {
+  try {
+    const [row] = await connection.execute(
+      "UPDATE Products SET ProductName = ?, Category = ?, Price = ?, StockQuantity = ?, ImageURL = ?, Description = ? WHERE ProductID = ?",
+      [
+        productName,
+        category,
+        price,
+        stockQuantity,
+        imageUrl || null,
+        description || null,
+        id,
+      ],
+    );
+    return row;
+  } catch (error) {
     throw error;
   }
 }

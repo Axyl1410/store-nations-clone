@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 type ProductCardProps = {
@@ -18,11 +17,11 @@ export default function ProductCard({
   //Todo - visible on hover name, price, add to cart button
   return (
     <Link href={`/product/${ProductID}`}>
-      <div className={cn("card", className)}>
+      <div className={className}>
         <div className="secondary">
           <picture>
             <img
-              className="aspect-square object-cover"
+              className="aspect-square w-full object-cover"
               src={ImageURL}
               alt="Broke Hoodie"
               width={1280}
