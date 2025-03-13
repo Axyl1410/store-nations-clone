@@ -11,6 +11,8 @@ const registerSchema = z.object({
   address: z.string().nonempty(),
 });
 
+type Register = z.infer<typeof registerSchema>;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -27,14 +29,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { firstName, lastName, email, password, phone, address } =
-      validation.data;
+    const Register = validation.data as Register;
     const result = await createCustomer(
-      firstName + " " + lastName,
-      email,
-      password,
-      phone,
-      address,
+      Register.firstName + " " + Register.lastName,
+      Register.email,
+      Register.password,
+      Register.phone,
+      Register.address,
     );
 
     if (result) {

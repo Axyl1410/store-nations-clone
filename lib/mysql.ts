@@ -144,3 +144,43 @@ export async function createOrder(
 }
 
 //#endregion
+//#region 3. Products
+
+export async function getAllProducts() {
+  try {
+    const [rows] = await connection.execute("SELECT * FROM Products");
+    return rows;
+  } catch (error) {
+    console.error("Error fetching all products:", error);
+    throw error;
+  }
+}
+
+export async function createProduct(
+  productName: string,
+  category: string,
+  price: number,
+  stockQuantity: number,
+  imageUrl?: string,
+  description?: string,
+) {
+  try {
+    const [result] = await connection.execute(
+      "INSERT INTO Products (ProductName, Category, Price, StockQuantity, ImageURL, Description) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        productName,
+        category,
+        price,
+        stockQuantity,
+        imageUrl || null,
+        description || null,
+      ],
+    );
+    return result;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw error;
+  }
+}
+
+//#endregion

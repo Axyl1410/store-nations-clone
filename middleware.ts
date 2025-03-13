@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAuthToken } from "./lib/auth";
 
-const PUBLIC_PATHS = [
-  "/login",
-  "/sign-up",
-  "/_next",
-  "/favicon.ico",
-  "/api/public",
-];
+const PUBLIC_PATHS = ["/login", "/sign-up", "/_next", "/favicon.ico", "/api"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

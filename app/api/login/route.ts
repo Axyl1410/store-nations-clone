@@ -8,6 +8,8 @@ const loginSchema = z.object({
   password: z.string().min(6).nonempty(),
 });
 
+type Login = z.infer<typeof loginSchema>;
+
 const JWT_SECRET = process.env.JWT_SECRET || "secret-key";
 
 export async function POST(request: Request) {
@@ -26,8 +28,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const { email, password } = validation.data;
-    const result = await loginWithEmailAndPassword(email, password);
+    const login = validation.data as Login;
+    const result = await loginWithEmailAndPassword(login.email, login.password);
 
     if (result) {
       const expiresIn = 6 * 60 * 60; // 6 hours in seconds

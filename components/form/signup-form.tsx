@@ -48,7 +48,7 @@ export function SignUpForm({
     setLoading(true);
 
     try {
-      await axios.post("/api/public/register", {
+      await axios.post("/api/register", {
         firstName,
         lastName,
         email,
