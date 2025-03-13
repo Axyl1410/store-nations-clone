@@ -5,15 +5,18 @@ import ProductCard from "@/components/ui/product-card";
 import axios from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   async function getProducts() {
     const response = await axios.get("/api/product");
 
     setProducts(response.data.data);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -28,7 +31,7 @@ export default function Home() {
         </div>
       </div>
       <div className={cn("grid-cols-3", products.length > 0 && "md:grid")}>
-        {products.length > 0 ? (
+        {products.length > 0 || !loading ? (
           products.map((product, index) => {
             // Calculate border classes based on position (0-indexed)
             const totalRows = Math.ceil(products.length / 3);
@@ -57,10 +60,13 @@ export default function Home() {
             );
           })
         ) : (
-          <div className="flex w-full items-center justify-center px-4 py-5">
+          <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
             <Loading />
           </div>
         )}
+      </div>
+      <div className="border-primary flex h-16 w-full items-center justify-center border-t text-sm [&_a]:hover:underline">
+        <Link href={"/product"}>View all products</Link>
       </div>
     </>
   );
