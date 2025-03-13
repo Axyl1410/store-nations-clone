@@ -1,8 +1,10 @@
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { CounterStoreProvider } from "@/providers/counter-store-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,16 +27,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-secondary text-primary min-h-screen font-[family-name:var(--font-geist-sans)] antialiased",
+          "bg-background text-foreground min-h-screen font-[family-name:var(--font-geist-sans)] antialiased",
           geistSans.variable,
           geistMono.variable,
         )}
       >
-        <main>{children}</main>
-        <Toaster closeButton />
+        <ThemeProvider defaultTheme="system">
+          <CounterStoreProvider>
+            <main>{children}</main>
+          </CounterStoreProvider>
+        </ThemeProvider>
+        <Toaster closeButton position="top-right" />
       </body>
     </html>
   );

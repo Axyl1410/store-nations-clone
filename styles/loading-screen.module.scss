@@ -1,14 +1,10 @@
-.lds-ripple {
+.tea {
   display: flex;
   position: relative;
   width: 64px;
   height: 64px;
   top: calc(50% - 3.5px);
   margin: 0 auto;
-}
-
-svg.tea {
-  --secondary: #33406f;
 
   #teabag {
     transform-origin: top center;

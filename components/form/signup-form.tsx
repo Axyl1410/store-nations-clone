@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,26 +10,79 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
+import axios from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    document.cookie =
+      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }, []);
+
+  async function handleSignIn(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await axios.post("/api/register", {
+        firstName,
+        lastName,
+        email,
+        password,
+        phone,
+        address,
+      });
+
+      toast.success("Account created successfully!");
+      setOpen(true);
+    } catch (error: unknown) {
+      console.error(
+        "Login error:",
+        error instanceof Error ? error.message : error,
+      );
+      toast.error("An error occurred during login", {
+        description: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="border shadow-sm">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-semibold">
-            Create an account
-          </CardTitle>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">Create an account</CardTitle>
           <CardDescription>
             Sign up to get started with our services
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSignIn}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-3">
                 <Button
@@ -36,7 +91,7 @@ export function SignUpForm({
                   className="hover:bg-accent relative w-full overflow-hidden transition-all"
                 >
                   <svg
-                    className="mr-2 h-4 w-4"
+                    className="h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 127.14 96.36"
                     fill="currentColor"
@@ -64,6 +119,7 @@ export function SignUpForm({
                       id="firstName"
                       type="text"
                       placeholder="John"
+                      onChange={(e) => setFirstName(e.target.value)}
                       required
                     />
                   </div>
@@ -73,6 +129,7 @@ export function SignUpForm({
                       id="lastName"
                       type="text"
                       placeholder="Doe"
+                      onChange={(e) => setLastName(e.target.value)}
                       required
                     />
                   </div>
@@ -82,7 +139,8 @@ export function SignUpForm({
                   <Input
                     id="email"
                     type="email"
-                    placeholder="example@email.com"
+                    placeholder="your@email.address"
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -93,7 +151,12 @@ export function SignUpForm({
                       Password requirements
                     </p>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone number</Label>
@@ -101,6 +164,7 @@ export function SignUpForm({
                     id="phone"
                     type="tel"
                     placeholder="+1 (555) 000-0000"
+                    onChange={(e) => setPhone(e.target.value)}
                     required
                   />
                 </div>
@@ -110,11 +174,16 @@ export function SignUpForm({
                     id="address"
                     type="text"
                     placeholder="1234 Main St"
+                    onChange={(e) => setAddress(e.target.value)}
                     required
                   />
                 </div>
-                <Button type="submit" className="mt-2 w-full">
-                  Create Account
+                <Button
+                  type="submit"
+                  className="mt-2 w-full"
+                  disabled={loading}
+                >
+                  {loading ? "Creating account..." : "Create Account"}
                 </Button>
               </div>
               <div className="text-center text-sm">
@@ -130,17 +199,22 @@ export function SignUpForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="#" className="hover:cursor-not-allowed">
-          Privacy Policy
-        </a>
-        .
-      </div>
+
+      <ResponsiveDialog open={open} onOpenChange={setOpen}>
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>Navigator to Login</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>
+            Do you want go to login?
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
+
+        <ResponsiveDialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => router.push("/login")}>Continue</Button>
+        </ResponsiveDialogFooter>
+      </ResponsiveDialog>
     </div>
   );
 }
