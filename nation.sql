@@ -18,7 +18,9 @@ CREATE TABLE Products (
     Price DECIMAL(18,2) NOT NULL,
     StockQuantity INT NOT NULL,
     ImageURL VARCHAR(255),
-    Description TEXT
+    Description TEXT,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 ) ENGINE=InnoDB;
 
 CREATE TABLE Orders (

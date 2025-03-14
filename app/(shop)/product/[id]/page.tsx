@@ -1,3 +1,5 @@
+import { Client } from "./client";
+
 export default async function Page({
   params,
 }: {
@@ -5,5 +7,5 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  return <div>Product ID: {id}</div>;
+  return <Client id={id} />;
 }

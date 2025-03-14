@@ -146,7 +146,30 @@ export async function createOrder(
 
 export async function getAllProducts() {
   try {
-    const [rows] = await connection.execute("SELECT * FROM Products");
+    // Modified query to join with Customers table
+    const [rows] = await connection.execute(`
+      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      FROM Products p
+      LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
+    `);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getProductsWithPagination(limit = 10, offset = 0) {
+  try {
+    // Paginated query with customer join
+    const [rows] = await connection.execute(
+      `
+      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      FROM Products p
+      LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
+      LIMIT ? OFFSET ?
+    `,
+      [limit, offset],
+    );
     return rows;
   } catch (error) {
     throw error;
@@ -160,10 +183,12 @@ export async function createProduct(
   stockQuantity: number,
   imageUrl?: string,
   description?: string,
+  customerId?: number,
 ) {
   try {
+    // Updated to include CustomerID
     const [row] = await connection.execute(
-      "INSERT INTO Products (ProductName, Category, Price, StockQuantity, ImageURL, Description) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO Products (ProductName, Category, Price, StockQuantity, ImageURL, Description, CustomerID) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         productName,
         category,
@@ -171,6 +196,7 @@ export async function createProduct(
         stockQuantity,
         imageUrl || null,
         description || null,
+        customerId || null,
       ],
     );
     return row;
@@ -181,8 +207,14 @@ export async function createProduct(
 
 export async function getProductById(id: number) {
   try {
+    // Modified to include customer data
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      "SELECT * FROM Products WHERE ProductID = ?",
+      `
+      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      FROM Products p
+      LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
+      WHERE p.ProductID = ?
+    `,
       [id],
     );
     return rows[0] || null;
@@ -199,10 +231,12 @@ export async function updateProduct(
   stockQuantity: number,
   imageUrl?: string,
   description?: string,
+  customerId?: number,
 ) {
   try {
+    // Updated to include CustomerID
     const [row] = await connection.execute(
-      "UPDATE Products SET ProductName = ?, Category = ?, Price = ?, StockQuantity = ?, ImageURL = ?, Description = ? WHERE ProductID = ?",
+      "UPDATE Products SET ProductName = ?, Category = ?, Price = ?, StockQuantity = ?, ImageURL = ?, Description = ?, CustomerID = ? WHERE ProductID = ?",
       [
         productName,
         category,
@@ -210,10 +244,24 @@ export async function updateProduct(
         stockQuantity,
         imageUrl || null,
         description || null,
+        customerId || null,
         id,
       ],
     );
     return row;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// New function to get products by customer ID
+export async function getProductsByCustomerId(customerId: number) {
+  try {
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM Products WHERE CustomerID = ?",
+      [customerId],
+    );
+    return rows;
   } catch (error) {
     throw error;
   }
