@@ -9,12 +9,22 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Product } from "@/types";
+import { ProductWithFullName } from "@/types";
 import { useEffect, useState } from "react";
 
 export function Client({ id }: { id: number }) {
-  const [products, setProducts] = useState<Product>();
+  const [products, setProducts] = useState<ProductWithFullName>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,17 +79,68 @@ export function Client({ id }: { id: number }) {
             )}
           </div>
         )}
-        <div className="border-primary flex flex-col gap-4 border-t p-4 md:border-t-0 md:border-l">
-          <Skeleton className="h-[20px] w-1/4" />
-          <Skeleton className="h-[20px] w-2/4" />
-          <Skeleton className="h-[30px] w-2/4" />
-          <Skeleton className="h-[15px] w-1/4" />
-          <Skeleton className="h-[50px] w-full" />
-          <Skeleton className="h-[50px] w-full" />
-          <Skeleton className="h-[50px] w-full" />
-          <div className="flex w-full justify-center">
-            <Skeleton className="h-[20px] w-1/4" />
-          </div>
+        <div className="border-primary flex flex-col gap-2 border-t p-4 md:border-t-0 md:border-l">
+          {loading ? (
+            <>
+              <Skeleton className="h-[20px] w-1/4" />
+              <Skeleton className="h-[20px] w-2/4" />
+              <Skeleton className="h-[30px] w-2/4" />
+              <Skeleton className="h-[15px] w-1/4" />
+              <Skeleton className="h-[50px] w-full" />
+              <Skeleton className="h-[50px] w-full" />
+              <Skeleton className="h-[50px] w-full" />
+              <div className="flex w-full justify-center">
+                <Skeleton className="h-[20px] w-1/4" />
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="cursor-pointer text-sm hover:underline">
+                {products?.FullName}
+              </p>
+              <p className="uppercase">{products?.ProductName}</p>
+              <div>
+                <p>{products?.Price}$</p>
+                <p className="text-xs [&_span]:cursor-pointer [&_span]:underline">
+                  <span>Shipping</span> calculated at checkout.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 pt-4">
+                <p className="text-sm font-bold">Size</p>
+                <Select>
+                  <SelectTrigger className="border-primary w-full rounded-none">
+                    <SelectValue placeholder="S" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Size</SelectLabel>
+                      <SelectItem value="S">S</SelectItem>
+                      <SelectItem value="M">M</SelectItem>
+                      <SelectItem value="L">L</SelectItem>
+                      <SelectItem value="XL">XL</SelectItem>
+                      <SelectItem value="2XL">2XL</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                className="border-primary mt-2 w-full cursor-pointer rounded-none uppercase"
+                variant={"outline"}
+                size={"lg"}
+              >
+                Add to cart
+              </Button>
+              <Button
+                className="border-primary w-full cursor-pointer rounded-none bg-indigo-600 uppercase hover:bg-indigo-700"
+                size={"lg"}
+              >
+                Buy now
+              </Button>
+              <div className="mt-2 w-full cursor-not-allowed text-center text-sm font-bold underline">
+                More payment options{" "}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

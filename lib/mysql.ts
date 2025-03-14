@@ -148,7 +148,7 @@ export async function getAllProducts() {
   try {
     // Modified query to join with Customers table
     const [rows] = await connection.execute(`
-      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
     `);
@@ -163,7 +163,7 @@ export async function getProductsWithPagination(limit = 10, offset = 0) {
     // Paginated query with customer join
     const [rows] = await connection.execute(
       `
-      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
       LIMIT ? OFFSET ?
@@ -210,7 +210,7 @@ export async function getProductById(id: number) {
     // Modified to include customer data
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       `
-      SELECT p.*, c.FullName, c.Email, c.PhoneNumber, c.Address 
+      SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
       WHERE p.ProductID = ?
