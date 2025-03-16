@@ -131,13 +131,13 @@ export function Client({ id }: { id: number }) {
                 Add to cart
               </Button>
               <Button
-                className="border-primary w-full cursor-pointer rounded-none bg-indigo-600 uppercase hover:bg-indigo-700"
+                className="border-primary w-full cursor-pointer rounded-none bg-indigo-600 text-white uppercase hover:bg-indigo-700"
                 size={"lg"}
               >
                 Buy now
               </Button>
-              <div className="mt-2 w-full cursor-not-allowed text-center text-sm font-bold underline">
-                More payment options{" "}
+              <div className="mt-2 w-full text-center text-sm font-bold underline">
+                <p className="cursor-not-allowed">More payment options</p>
               </div>
             </>
           )}

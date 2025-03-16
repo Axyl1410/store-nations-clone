@@ -1,10 +1,9 @@
-import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CounterStoreProvider } from "@/providers/counter-store-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +35,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider defaultTheme="system">
-          <CounterStoreProvider>
-            <main>{children}</main>
-          </CounterStoreProvider>
+          <main>{children}</main>
         </ThemeProvider>
         <Toaster closeButton position="top-right" />
       </body>

@@ -35,6 +35,20 @@ export interface OrderDetail {
   Price: number;
 }
 
+export interface Cart {
+  CartID: number;
+  CustomerID: number;
+  CreatedAt: string | Date;
+}
+
+export interface CartItem {
+  CartItemID: number;
+  CartID: number;
+  ProductID: number;
+  Quantity: number;
+  Price: number;
+}
+
 export type CustomerWithoutPassword = Omit<Customer, "Password">;
 
 export type ProductWithFullName = Product & { FullName: string };

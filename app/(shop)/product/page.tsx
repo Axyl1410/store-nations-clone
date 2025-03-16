@@ -83,11 +83,7 @@ export default function Page() {
               <ProductCard
                 key={product.ProductID}
                 className={cn("border-primary", borderClass)}
-                Price={product.Price}
-                ProductID={product.ProductID}
-                ProductName={product.ProductName}
-                StockQuantity={product.StockQuantity}
-                ImageURL={product.ImageURL}
+                {...product}
               />
             );
           })
