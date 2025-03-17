@@ -1,5 +1,8 @@
 import { SignUpForm } from "@/components/form/signup-form";
+import axios from "@/lib/axios";
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  await axios.post("/api/logout");
+
   return <SignUpForm />;
 }

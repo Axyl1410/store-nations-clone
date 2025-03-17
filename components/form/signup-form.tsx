@@ -21,7 +21,7 @@ import axios from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function SignUpForm({
@@ -37,11 +37,6 @@ export function SignUpForm({
   const [address, setAddress] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
-
-  useEffect(() => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-  }, []);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();

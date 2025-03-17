@@ -14,7 +14,7 @@ import axios from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function LoginForm({
@@ -26,11 +26,6 @@ export function LoginForm({
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  useEffect(() => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-  }, []);
-
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -40,8 +35,6 @@ export function LoginForm({
         email,
         password,
       });
-
-      console.log("Login response:", response);
 
       const data = response.data;
 

@@ -268,3 +268,111 @@ export async function getProductsByCustomerId(customerId: number) {
 }
 
 //#endregion
+//#region 4. Cart
+
+// Function to create a new cart for a customer
+export async function createCart(customerId: number) {
+  try {
+    const [result] = await connection.execute(
+      "INSERT INTO Cart (CustomerID) VALUES (?)",
+      [customerId],
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to get a customer's cart
+export async function getCartByCustomerId(customerId: number) {
+  try {
+    const [cart] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM Cart WHERE CustomerID = ? order by CartID desc",
+      [customerId],
+    );
+
+    if (!cart || cart.length === 0) throw new Error("Cart not found");
+
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to add an item to cart
+export async function addToCart(
+  cartId: number,
+  productId: number,
+  quantity: number,
+  price: number,
+) {
+  try {
+    // Check if the item already exists in the cart
+    const [existingItem] = await connection.execute<mysql.RowDataPacket[]>(
+      "SELECT * FROM CartItems WHERE CartID = ? AND ProductID = ?",
+      [cartId, productId],
+    );
+
+    if (existingItem && existingItem.length > 0) {
+      // Update existing item quantity
+      const [result] = await connection.execute(
+        "UPDATE CartItems SET Quantity = Quantity + ? WHERE CartID = ? AND ProductID = ?",
+        [quantity, cartId, productId],
+      );
+      return result;
+    } else {
+      // Insert new item
+      const [result] = await connection.execute(
+        "INSERT INTO CartItems (CartID, ProductID, Quantity, Price) VALUES (?, ?, ?, ?)",
+        [cartId, productId, quantity, price],
+      );
+      return result;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to remove an item from cart
+export async function removeFromCart(cartItemId: number) {
+  try {
+    const [result] = await connection.execute(
+      "DELETE FROM CartItems WHERE CartItemID = ?",
+      [cartItemId],
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to update cart item quantity
+export async function updateCartItemQuantity(
+  cartItemId: number,
+  quantity: number,
+) {
+  try {
+    const [result] = await connection.execute(
+      "UPDATE CartItems SET Quantity = ? WHERE CartItemID = ?",
+      [quantity, cartItemId],
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to clear a cart
+export async function clearCart(cartId: number) {
+  try {
+    const [result] = await connection.execute(
+      "DELETE FROM CartItems WHERE CartID = ?",
+      [cartId],
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+//#endregion
