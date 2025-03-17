@@ -1,4 +1,4 @@
-import { createCustomer } from "@/lib/mysql";
+import { createCustomer } from "@/lib/customers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 

@@ -1,4 +1,4 @@
-import { getAllCustomers } from "@/lib/mysql";
+import { getAllCustomers } from "@/lib/customers";
 import { NextResponse } from "next/server";
 
 export async function GET() {

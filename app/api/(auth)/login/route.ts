@@ -1,4 +1,4 @@
-import { loginWithEmailAndPassword } from "@/lib/mysql";
+import { loginWithEmailAndPassword } from "@/lib/customers";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";

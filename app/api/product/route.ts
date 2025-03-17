@@ -1,4 +1,4 @@
-import { createProduct, getAllProducts } from "@/lib/mysql";
+import { getAllProducts, createProduct } from "@/lib/products";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
