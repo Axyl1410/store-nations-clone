@@ -2,32 +2,20 @@ import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
 import { connection } from "./mysql";
 
-export async function getAllCustomers() {
-  try {
-    const [rows] = await connection.execute("SELECT * FROM Customers");
-    return rows;
-  } catch (error) {
-    console.error("Error fetching all customers:", error);
-    throw error;
-  }
-}
-
-// Function to login with email and password
 export async function loginWithEmailAndPassword(
   email: string,
   password: string,
 ) {
   try {
-    // First find user with the email only
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Customers WHERE Email = ? LIMIT 1",
       [email],
     );
 
     const user = rows[0] || null;
+    const passwordMatch = await bcrypt.compare(password, user.Password);
 
-    // If no user found or password doesn't match
-    if (!user || !bcrypt.compare(password, user.Password)) return null;
+    if (!passwordMatch || !user) throw new Error("Invalid email or password");
 
     return user;
   } catch (error) {

@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error getting customers:", error);
     return NextResponse.json(
-      { success: false, message: "An error occurred during login" },
+      { success: false, message: "Incorrect email or password" },
       { status: 500 },
     );
   }

@@ -18,11 +18,13 @@ import {
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog";
 import axios from "@/lib/axios";
-import { cn } from "@/lib/utils";
+import { cn, isValidEmail, isValidPassword } from "@/lib/utils";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { TextMorph } from "../motion-primitives/text-morph";
 
 export function SignUpForm({
   className,
@@ -36,10 +38,45 @@ export function SignUpForm({
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
   const router = useRouter();
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setEmail(value);
+
+    if (value && !isValidEmail(value)) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  }
+
+  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (value && !isValidPassword(value)) {
+      setPasswordError("Password must be at least 6 characters");
+    } else {
+      setPasswordError("");
+    }
+  }
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!isValidEmail(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -135,9 +172,23 @@ export function SignUpForm({
                     id="email"
                     type="email"
                     placeholder="your@email.address"
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     required
+                    className={emailError ? "border-red-500" : ""}
                   />
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{
+                      height: emailError ? "auto" : 0,
+                      opacity: emailError ? 1 : 0,
+                    }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    {emailError && (
+                      <p className="text-xs text-red-500">{emailError}</p>
+                    )}
+                  </motion.div>
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center justify-between">
@@ -149,9 +200,23 @@ export function SignUpForm({
                   <Input
                     id="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     required
+                    className={passwordError ? "border-red-500" : ""}
                   />
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{
+                      height: passwordError ? "auto" : 0,
+                      opacity: passwordError ? 1 : 0,
+                    }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    {passwordError && (
+                      <p className="text-xs text-red-500">{passwordError}</p>
+                    )}
+                  </motion.div>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone number</Label>
@@ -178,7 +243,9 @@ export function SignUpForm({
                   className="mt-2 w-full"
                   disabled={loading}
                 >
-                  {loading ? "Creating account..." : "Create Account"}
+                  <TextMorph>
+                    {loading ? "Creating account..." : "Create Account"}
+                  </TextMorph>
                 </Button>
               </div>
               <div className="text-center text-sm">

@@ -1,6 +1,14 @@
+"use client";
+
+import axios from "@/lib/axios";
 import { GalleryVerticalEnd } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    axios.post("/api/logout");
+  });
+
   return (
     <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-4 py-6 sm:p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
