@@ -3,6 +3,14 @@
 import notFound from "@/app/not-found";
 import Loading from "@/components/common/loading";
 import {
+  MorphingDialog,
+  MorphingDialogClose,
+  MorphingDialogContainer,
+  MorphingDialogContent,
+  MorphingDialogImage,
+  MorphingDialogTrigger,
+} from "@/components/motion-primitives/morphing-dialog";
+import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -22,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductWithFullName } from "@/types";
+import { XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Client({ id }: { id: number }) {
@@ -40,7 +49,7 @@ export function Client({ id }: { id: number }) {
     getProduct();
   }, [id]);
 
-  if (!products) return notFound();
+  if (!products && !loading) return notFound();
 
   return (
     <>
@@ -69,12 +78,42 @@ export function Client({ id }: { id: number }) {
         ) : (
           <div className="flex w-full justify-center">
             {products?.ImageURL ? (
-              <picture>
-                <img
-                  src={`https:${products.ImageURL}`}
-                  alt={products.ProductName}
-                />
-              </picture>
+              <MorphingDialog
+                transition={{
+                  duration: 0.3,
+                  ease: "easeInOut",
+                }}
+              >
+                <MorphingDialogTrigger>
+                  <MorphingDialogImage
+                    src={`https:${products.ImageURL}`}
+                    className="rounded-[4px]"
+                    alt=""
+                  />
+                </MorphingDialogTrigger>
+                <MorphingDialogContainer>
+                  <MorphingDialogContent className="relative">
+                    <MorphingDialogImage
+                      src={`https:${products.ImageURL}`}
+                      alt=""
+                      className="h-auto w-full max-w-[90vw] rounded-[4px] object-cover lg:h-[90vh]"
+                    />
+                  </MorphingDialogContent>
+                  <MorphingDialogClose
+                    className="bg-primary fixed top-6 right-6 h-fit w-fit cursor-pointer rounded-full p-1"
+                    variants={{
+                      initial: { opacity: 0 },
+                      animate: {
+                        opacity: 1,
+                        transition: { delay: 0.3, duration: 0.1 },
+                      },
+                      exit: { opacity: 0, transition: { duration: 0 } },
+                    }}
+                  >
+                    <XIcon className="text-background h-5 w-5" />
+                  </MorphingDialogClose>
+                </MorphingDialogContainer>
+              </MorphingDialog>
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gray-200">
                 No image available
