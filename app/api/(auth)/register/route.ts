@@ -1,5 +1,9 @@
 import { createCustomer } from "@/lib/customers";
-import { NextResponse } from "next/server";
+import {
+  createErrorResponse,
+  createResponse,
+  getErrorMessage,
+} from "@/lib/utils";
 import { z } from "zod";
 
 const registerSchema = z.object({
@@ -18,16 +22,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validation = registerSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: validation.error.flatten().fieldErrors,
-        },
-        { status: 400 },
-      );
-    }
+    if (!validation.success)
+      return createErrorResponse("Invalid request data", 400);
 
     const Register = validation.data as Register;
     const result = await createCustomer(
@@ -38,19 +34,9 @@ export async function POST(request: Request) {
       Register.address,
     );
 
-    if (result) {
-      return NextResponse.json({ result }, { status: 200 });
-    } else {
-      return NextResponse.json(
-        { success: false, message: "Registration failed" },
-        { status: 401 },
-      );
-    }
+    if (result) return createResponse(result, true, 201);
+    return createErrorResponse("Registration failed", 500);
   } catch (error) {
-    console.error("Error getting customers:", error);
-    return NextResponse.json(
-      { success: false, message: "An error occurred during registration" },
-      { status: 500 },
-    );
+    return createErrorResponse(getErrorMessage(error), 500);
   }
 }

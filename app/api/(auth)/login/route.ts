@@ -1,4 +1,5 @@
 import { loginWithEmailAndPassword } from "@/lib/customers";
+import { createErrorResponse, getErrorMessage } from "@/lib/utils";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,16 +18,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validation = loginSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "validation failed",
-          errors: validation.error.flatten().fieldErrors,
-        },
-        { status: 400 },
-      );
-    }
+    if (!validation.success)
+      return createErrorResponse("Invalid request data", 400);
 
     const login = validation.data as Login;
     const result = await loginWithEmailAndPassword(login.email, login.password);
@@ -55,17 +48,9 @@ export async function POST(request: Request) {
       });
 
       return response;
-    } else {
-      return NextResponse.json(
-        { success: false, message: "Login failed" },
-        { status: 401 },
-      );
     }
+    return createErrorResponse("Incorrect email or password", 401);
   } catch (error) {
-    console.error("Error getting customers:", error);
-    return NextResponse.json(
-      { success: false, message: "Incorrect email or password" },
-      { status: 500 },
-    );
+    return createErrorResponse(getErrorMessage(error), 500);
   }
 }

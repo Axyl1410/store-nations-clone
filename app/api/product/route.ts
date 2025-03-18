@@ -1,5 +1,9 @@
 import { createProduct, getAllProducts } from "@/lib/products";
-import { NextResponse } from "next/server";
+import {
+  createErrorResponse,
+  createResponse,
+  getErrorMessage,
+} from "@/lib/utils";
 import { z } from "zod";
 
 const productSchema = z.object({
@@ -20,13 +24,9 @@ type Product = z.infer<typeof productSchema>;
 export async function GET() {
   try {
     const result = await getAllProducts();
-    return NextResponse.json({ data: result }, { status: 200 });
+    return createResponse(result);
   } catch (error) {
-    console.error("Error getting customers:", error);
-    return NextResponse.json(
-      { success: false, message: "An error occurred during login" },
-      { status: 500 },
-    );
+    return createErrorResponse(getErrorMessage(error), 500);
   }
 }
 
@@ -35,16 +35,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validation = productSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: validation.error.flatten().fieldErrors,
-        },
-        { status: 400 },
-      );
-    }
+    if (!validation.success)
+      return createErrorResponse("Invalid request data", 400);
 
     const product = validation.data as Product;
     const result = await createProduct(
@@ -56,19 +48,10 @@ export async function POST(request: Request) {
       product.Description,
     );
 
-    if (result) {
-      return NextResponse.json({ result }, { status: 200 });
-    } else {
-      return NextResponse.json(
-        { success: false, message: "Product creation failed" },
-        { status: 401 },
-      );
-    }
+    if (result) return createResponse(result, true, 201);
+
+    return createErrorResponse("Product creation failed", 500);
   } catch (error) {
-    console.error("Error creating product:", error);
-    return NextResponse.json(
-      { success: false, message: "An error occurred during product creation" },
-      { status: 500 },
-    );
+    return createErrorResponse(getErrorMessage(error), 500);
   }
 }

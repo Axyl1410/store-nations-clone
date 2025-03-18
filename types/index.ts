@@ -49,6 +49,24 @@ export interface CartItem {
   Price: number;
 }
 
+export interface Order {
+  OrderID: number;
+  CustomerID: number | null;
+  OrderDate: Date | string;
+  TotalAmount: number;
+  Status: string;
+}
+
+export interface OrderDetail {
+  OrderDetailID: number;
+  OrderID: number;
+  ProductID: number;
+  Quantity: number;
+  Price: number;
+  ProductName?: string; // Thêm từ JOIN
+  Category?: string; // Thêm từ JOIN
+}
+
 export type CustomerWithoutPassword = Omit<Customer, "Password">;
 
 export type ProductWithFullName = Product & { FullName: string };

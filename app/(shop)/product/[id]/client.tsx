@@ -1,5 +1,6 @@
 "use client";
 
+import notFound from "@/app/not-found";
 import Loading from "@/components/common/loading";
 import {
   Breadcrumb,
@@ -38,6 +39,8 @@ export function Client({ id }: { id: number }) {
 
     getProduct();
   }, [id]);
+
+  if (!products) return notFound();
 
   return (
     <>

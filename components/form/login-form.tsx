@@ -11,7 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "@/lib/axios";
-import { cn, isValidEmail, isValidPassword } from "@/lib/utils";
+import {
+  cn,
+  getErrorMessage,
+  isValidEmail,
+  isValidPassword,
+} from "@/lib/utils";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -86,13 +91,9 @@ export function LoginForm({
       } else {
         toast.error(data.message || "Login failed");
       }
-    } catch (error: unknown) {
-      console.error(
-        "Login error:",
-        error instanceof Error ? error.message : error,
-      );
+    } catch (error) {
       toast.error("An error occurred during login", {
-        description: error instanceof Error ? error.message : String(error),
+        description: getErrorMessage(error),
       });
     } finally {
       setLoading(false);
