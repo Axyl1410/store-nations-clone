@@ -87,7 +87,7 @@ export function Client({ id }: { id: number }) {
                 <MorphingDialogTrigger>
                   <MorphingDialogImage
                     src={`https:${products.ImageURL}`}
-                    className="rounded-[4px]"
+                    className="cursor-pointer"
                     alt=""
                   />
                 </MorphingDialogTrigger>
@@ -96,7 +96,7 @@ export function Client({ id }: { id: number }) {
                     <MorphingDialogImage
                       src={`https:${products.ImageURL}`}
                       alt=""
-                      className="h-auto w-full max-w-[90vw] rounded-[4px] object-cover lg:h-[90vh]"
+                      className="h-auto w-full max-w-[90vw] object-cover md:h-[90vh]"
                     />
                   </MorphingDialogContent>
                   <MorphingDialogClose

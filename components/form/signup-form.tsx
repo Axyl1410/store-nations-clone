@@ -51,22 +51,18 @@ export function SignUpForm({
     const value = e.target.value;
     setEmail(value);
 
-    if (value && !isValidEmail(value)) {
+    if (value && !isValidEmail(value))
       setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
+    else setEmailError("");
   }
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setPassword(value);
 
-    if (value && !isValidPassword(value)) {
+    if (value && !isValidPassword(value))
       setPasswordError("Password must be at least 6 characters");
-    } else {
-      setPasswordError("");
-    }
+    else setPasswordError("");
   }
 
   async function handleSignIn(e: React.FormEvent) {

@@ -1,5 +1,5 @@
-import { connection } from "./mysql";
 import mysql from "mysql2/promise";
+import { connection } from "./mysql";
 
 export async function getAllProducts() {
   try {
@@ -117,6 +117,25 @@ export async function getProductsByCustomerId(customerId: number) {
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Products WHERE CustomerID = ?",
       [customerId],
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getRandomProducts(count = 5) {
+  try {
+    // Get 5 unique random products with customer info
+    const [rows] = await connection.execute(
+      `
+      SELECT p.*, c.FullName
+      FROM Products p
+      LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
+      ORDER BY RAND()
+      LIMIT ?
+    `,
+      [count],
     );
     return rows;
   } catch (error) {

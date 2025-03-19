@@ -19,10 +19,12 @@ export async function getCartById(cartId: number) {
 
     // Get cart items with product details
     const [items] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT ci.*, p.ProductName, p.Category, p.ImageURL
-       FROM CartItems ci
-       JOIN Products p ON ci.ProductID = p.ProductID
-       WHERE ci.CartID = ?`,
+      `
+      SELECT ci.*, p.ProductName, p.Category, p.ImageURL
+      FROM CartItems ci
+      JOIN Products p ON ci.ProductID = p.ProductID
+      WHERE ci.CartID = ?
+      `,
       [cartId],
     );
 
@@ -144,10 +146,12 @@ export async function addToCart(
 
       // Get the newly added item with product details
       const [newItem] = await connection.execute<mysql.RowDataPacket[]>(
-        `SELECT ci.*, p.ProductName, p.Category, p.ImageURL
-         FROM CartItems ci
-         JOIN Products p ON ci.ProductID = p.ProductID
-         WHERE ci.CartItemID = ?`,
+        `
+        SELECT ci.*, p.ProductName, p.Category, p.ImageURL
+        FROM CartItems ci
+        JOIN Products p ON ci.ProductID = p.ProductID
+        WHERE ci.CartItemID = ?
+        `,
         [cartItemId],
       );
 
@@ -190,10 +194,12 @@ export async function updateCartItem(cartItemId: number, quantity: number) {
 
     // Get updated item with product details
     const [updatedItem] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT ci.*, p.ProductName, p.Category, p.ImageURL
-       FROM CartItems ci
-       JOIN Products p ON ci.ProductID = p.ProductID
-       WHERE ci.CartItemID = ?`,
+      `
+      SELECT ci.*, p.ProductName, p.Category, p.ImageURL
+      FROM CartItems ci
+      JOIN Products p ON ci.ProductID = p.ProductID
+      WHERE ci.CartItemID = ?
+      `,
       [cartItemId],
     );
 

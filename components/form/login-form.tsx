@@ -39,22 +39,18 @@ export function LoginForm({
     const value = e.target.value;
     setEmail(value);
 
-    if (value && !isValidEmail(value)) {
+    if (value && !isValidEmail(value))
       setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
+    else setEmailError("");
   }
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setPassword(value);
 
-    if (value && !isValidPassword(value)) {
+    if (value && !isValidPassword(value))
       setPasswordError("Password must be at least 6 characters");
-    } else {
-      setPasswordError("");
-    }
+    else setPasswordError("");
   }
 
   async function handleLogin(e: React.FormEvent) {
@@ -81,16 +77,12 @@ export function LoginForm({
       const data = response.data;
 
       if (data) {
-        document.cookie = `authToken=${data.token}; path=/; max-age=${6 * 60 * 60}; SameSite=Lax`;
-
         toast.success("Login successful!");
         // Check for redirect param and use it
         const params = new URLSearchParams(window.location.search);
         const redirectPath = params.get("redirect") || "/";
         router.push(redirectPath);
-      } else {
-        toast.error(data.message || "Login failed");
-      }
+      } else toast.error(data.message || "Login failed");
     } catch (error) {
       toast.error("An error occurred during login", {
         description: getErrorMessage(error),

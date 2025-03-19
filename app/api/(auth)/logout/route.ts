@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { createResponse } from "@/lib/utils";
 
 export async function POST() {
-  const response = NextResponse.json({ success: true }, { status: 200 });
+  const response = createResponse("Logged out successfully", true, 200);
   response.cookies.delete("authToken");
 
   return response;
