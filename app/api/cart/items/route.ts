@@ -19,6 +19,8 @@ const updateCartItemSchema = z.object({
   quantity: z.number().int().min(0),
 });
 
+export const dynamic = "force-dynamic";
+
 // Delete cart item schema
 const removeCartItemSchema = z.object({
   cartItemId: z.number().int().positive(),

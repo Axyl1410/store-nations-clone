@@ -8,7 +8,7 @@ export const takeCartId = async () => {
   try {
     const response = await axios.post("/api/cart", { customerId: id });
     if (response.data && response.data.CartID)
-      return response.data.CartID.toString();
+      return response.data.data.CartID.toString();
   } catch (error) {
     console.error("Error fetching cart ID:", error);
   }

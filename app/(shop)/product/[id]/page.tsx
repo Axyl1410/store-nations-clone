@@ -1,5 +1,9 @@
 import notFound from "@/app/not-found";
-import { Client } from "./client";
+import { ProductWithFullName } from "@/types";
+import { getProductById } from "@/utils/products";
+import { ProductClient } from "./client";
+
+export const revalidate = 3600;
 
 export default async function Page({
   params,
@@ -10,5 +14,14 @@ export default async function Page({
 
   if (isNaN(id)) return notFound();
 
-  return <Client id={id} />;
+  try {
+    const product = await getProductById(id);
+
+    if (!product) return notFound();
+
+    return <ProductClient product={product as ProductWithFullName} />;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return notFound();
+  }
 }

@@ -21,6 +21,8 @@ const productSchema = z.object({
 
 type Product = z.infer<typeof productSchema>;
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const result = await getAllProducts();

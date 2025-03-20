@@ -13,7 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   async function getProducts() {
-    const response = await axios.get("/api/product");
+    const response = await axios.get("/api/product/random");
 
     setProducts(response.data.data);
     setLoading(false);
