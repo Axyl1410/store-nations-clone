@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/register",
   "/api/logout",
+  ...(process.env.NODE_ENV === "development" ? ["/api"] : []),
 ];
 
 export async function middleware(request: NextRequest) {

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
-import { connection } from "./mysql";
+import { connection } from "../lib/mysql";
 
 export async function loginWithEmailAndPassword(
   email: string,

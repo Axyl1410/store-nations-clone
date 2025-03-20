@@ -1,9 +1,9 @@
-import { getProductById } from "@/lib/products";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { getProductById } from "@/utils/products";
 
 export async function GET(
   _request: Request,

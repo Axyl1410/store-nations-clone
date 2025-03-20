@@ -1,9 +1,9 @@
-import { addToCart, removeFromCart, updateCartItem } from "@/lib/cart";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { addToCart, removeFromCart, updateCartItem } from "@/utils/cart";
 import { z } from "zod";
 
 // Add to cart schema

@@ -67,6 +67,12 @@ export interface OrderDetail {
   Category?: string; // Thêm từ JOIN
 }
 
+export interface CartItemWithProduct extends CartItem {
+  ProductName: string;
+  Category: string;
+  ImageURL?: string;
+}
+
 export type CustomerWithoutPassword = Omit<Customer, "Password">;
 
 export type ProductWithFullName = Product & { FullName: string };

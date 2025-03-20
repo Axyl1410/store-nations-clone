@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mysql from "mysql2/promise";
-import { connection } from "./mysql";
+import { connection } from "../lib/mysql";
 
 /**
  * Get all orders with optional filtering by customer ID
@@ -40,10 +40,12 @@ export async function getOrderById(orderId: number) {
   try {
     // Get order
     const [orders] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT o.*, c.FullName, c.Email, c.PhoneNumber, c.Address
-       FROM Orders o
-       LEFT JOIN Customers c ON o.CustomerID = c.CustomerID
-       WHERE o.OrderID = ?`,
+      `
+      SELECT o.*, c.FullName, c.Email, c.PhoneNumber, c.Address
+      FROM Orders o
+      LEFT JOIN Customers c ON o.CustomerID = c.CustomerID
+      WHERE o.OrderID = ?
+      `,
       [orderId],
     );
 
@@ -53,10 +55,12 @@ export async function getOrderById(orderId: number) {
 
     // Get order details with product information
     const [details] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT od.*, p.ProductName, p.Category, p.ImageURL
-       FROM OrderDetails od
-       JOIN Products p ON od.ProductID = p.ProductID
-       WHERE od.OrderID = ?`,
+      `
+      SELECT od.*, p.ProductName, p.Category, p.ImageURL
+      FROM OrderDetails od
+      JOIN Products p ON od.ProductID = p.ProductID
+      WHERE od.OrderID = ?
+      `,
       [orderId],
     );
 
@@ -85,10 +89,12 @@ export async function createOrderFromCart(
     try {
       // Get cart items
       const [cartItems] = await connection.execute<mysql.RowDataPacket[]>(
-        `SELECT ci.*, p.ProductName
-         FROM CartItems ci
-         JOIN Products p ON ci.ProductID = p.ProductID
-         WHERE ci.CartID = ?`,
+        `
+        SELECT ci.*, p.ProductName
+        FROM CartItems ci
+        JOIN Products p ON ci.ProductID = p.ProductID
+        WHERE ci.CartID = ?
+        `,
         [cartId],
       );
 

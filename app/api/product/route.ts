@@ -1,9 +1,9 @@
-import { createProduct, getAllProducts } from "@/lib/products";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { createProduct, getAllProducts } from "@/utils/products";
 import { z } from "zod";
 
 const productSchema = z.object({

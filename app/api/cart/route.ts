@@ -1,9 +1,9 @@
-import { clearCart, deleteCart, getOrCreateCart } from "@/lib/cart";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { clearCart, deleteCart, getOrCreateCart } from "@/utils/cart";
 import { z } from "zod";
 
 // Get cart schema

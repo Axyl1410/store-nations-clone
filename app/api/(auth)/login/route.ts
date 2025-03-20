@@ -1,5 +1,5 @@
-import { loginWithEmailAndPassword } from "@/lib/customers";
 import { createErrorResponse, getErrorMessage } from "@/lib/utils";
+import { loginWithEmailAndPassword } from "@/utils/customers";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -37,14 +37,24 @@ export async function POST(request: Request) {
 
       const response = NextResponse.json({ result, token }, { status: 200 });
 
+      const cookieOptions = {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" as const,
+        path: "/",
+        maxAge: expiresIn,
+      };
+
       response.cookies.set({
         name: "authToken",
         value: token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/",
-        maxAge: expiresIn,
+        ...cookieOptions,
+      });
+
+      response.cookies.set({
+        name: "idUser",
+        value: result.CustomerID.toString(),
+        ...cookieOptions,
       });
 
       return response;

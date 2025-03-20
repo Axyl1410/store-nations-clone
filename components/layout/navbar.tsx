@@ -1,21 +1,37 @@
 "use client";
 
 import axios from "@/lib/axios";
+import { getCookie } from "cookies-next";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { AnimatedNumber } from "../motion-primitives/animated-number";
 import { ThemeToggle } from "../theme/theme-toggle";
 
 export default function Navbar() {
   const router = useRouter();
+  const idUser = getCookie("idUser");
+
+  const [itemNumber, setItemNumber] = useState(0);
 
   async function handleLogout() {
     await axios.post("/api/logout");
     toast.success("Logged out successfully");
     router.push("/login");
   }
+
+  useEffect(() => {
+    async function takeItemNumber() {
+      const response = await axios.get("/api/cart?customerId=1");
+      console.log(response);
+      setItemNumber(response.data.data.items.length);
+    }
+
+    takeItemNumber();
+  }, [idUser]);
 
   return (
     <div className="bg-background text-primary border-primary fixed inset-x-0 top-0 z-50 border-b">
@@ -34,7 +50,14 @@ export default function Navbar() {
           </div>
           <ThemeToggle />
           <div className="flex items-center justify-end">
-            <p className="border-primary border px-1 text-sm">0</p>
+            <AnimatedNumber
+              className="border-primary border px-1 text-sm"
+              springOptions={{
+                bounce: 0,
+                duration: 2000,
+              }}
+              value={itemNumber}
+            />
           </div>
         </div>
       </div>

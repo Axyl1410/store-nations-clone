@@ -1,9 +1,9 @@
-import { cancelOrder } from "@/lib/orders";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { cancelOrder } from "@/utils/orders";
 import { z } from "zod";
 
 // Cancel order schema

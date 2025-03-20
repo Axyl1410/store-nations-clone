@@ -1,9 +1,9 @@
-import { createCustomer } from "@/lib/customers";
 import {
   createErrorResponse,
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
+import { createCustomer } from "@/utils/customers";
 import { z } from "zod";
 
 const registerSchema = z.object({

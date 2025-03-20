@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mysql from "mysql2/promise";
-import { connection } from "./mysql";
+import { connection } from "../lib/mysql";
 
 /**
  * Get cart by ID with all items and product details
@@ -111,6 +111,7 @@ export async function addToCart(
     );
 
     if (!product || product.length === 0) {
+      console.log("Product not found");
       throw new Error("Product not found");
     }
 

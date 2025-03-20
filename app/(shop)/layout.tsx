@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
 
-  const checkAuthToken = async () => {
+  const checkAuthToken = () => {
     const myCookie = getCookie("authToken");
 
     if (!myCookie) setShowAuthDialog(true);
