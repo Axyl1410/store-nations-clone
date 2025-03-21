@@ -21,8 +21,14 @@ async function ProductDetail({ id }: { id: number }) {
   }
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id, 10);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string | number }>;
+}) {
+  let { id } = await params;
+
+  if (typeof id === "string") id = parseInt(id, 10);
 
   if (isNaN(id)) return notFound();
 

@@ -46,22 +46,16 @@ export default function Navbar() {
       } catch (error) {
         console.error("Error fetching cart items:", error);
         setError(true);
-        // Don't show an error toast here as it would be disruptive on every page load
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchCartItems();
-
-    // Optional: Set up polling to keep cart count updated
-    const intervalId = setInterval(fetchCartItems, 60000); // Update every minute
-
-    return () => clearInterval(intervalId);
   }, [idUser]);
 
   return (
-    <div className="bg-background text-primary border-primary fixed inset-x-0 top-0 z-50 border-b">
+    <div className="bg-background text-primary border-primary sticky inset-x-0 top-0 z-50 container mx-auto border-b">
       <div className="flex h-[55px] w-full items-center pr-4 pl-1">
         <div className="flex h-full w-full items-center justify-start text-2xl font-black text-orange-600">
           <Link href="/">
@@ -70,6 +64,7 @@ export default function Navbar() {
               alt="Nation Store"
               width={130}
               height={130}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </Link>
         </div>

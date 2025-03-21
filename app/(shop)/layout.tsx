@@ -34,9 +34,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <>
+    <div className="border-primary container mx-auto border-x">
       <Navbar />
-      <div className="mt-[56px]">{children}</div>
+      <div>{children}</div>
       <Footer />
 
       <ResponsiveDialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
@@ -52,6 +52,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Link>
         </ResponsiveDialogFooter>
       </ResponsiveDialog>
-    </>
+    </div>
   );
 }

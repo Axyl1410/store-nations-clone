@@ -368,6 +368,7 @@ function MorphingDialogImage({
       className={cn(className)}
       layoutId={`dialog-img-${uniqueId}`}
       style={style}
+      onContextMenu={(event) => event.preventDefault()}
     />
   );
 }
