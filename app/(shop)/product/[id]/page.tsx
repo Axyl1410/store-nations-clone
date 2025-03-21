@@ -1,19 +1,14 @@
 import notFound from "@/app/not-found";
+import { Suspense } from "react";
 import { ProductWithFullName } from "@/types";
 import { getProductById } from "@/utils/products";
 import { ProductClient } from "./client";
+import { ProductSkeleton } from "./skeleton";
 
 export const revalidate = 3600;
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: number }>;
-}) {
-  const { id } = await params;
-
-  if (isNaN(id)) return notFound();
-
+// This component handles the actual data fetching
+async function ProductDetail({ id }: { id: number }) {
   try {
     const product = await getProductById(id);
 
@@ -24,4 +19,16 @@ export default async function Page({
     console.error("Error fetching product:", error);
     return notFound();
   }
+}
+
+export default async function Page({ params }: { params: { id: string } }) {
+  const id = parseInt(params.id, 10);
+
+  if (isNaN(id)) return notFound();
+
+  return (
+    <Suspense fallback={<ProductSkeleton />}>
+      <ProductDetail id={id} />
+    </Suspense>
+  );
 }

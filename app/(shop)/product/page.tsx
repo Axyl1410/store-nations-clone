@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Product } from "@/types";
 import axios from "axios";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -37,7 +38,9 @@ export default function Page() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbLink asChild>
+                <Link href={"/"}>Home</Link>
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
