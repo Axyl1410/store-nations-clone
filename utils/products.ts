@@ -18,8 +18,7 @@ export async function getAllProducts() {
 export async function getProductsWithPagination(limit = 10, offset = 0) {
   try {
     // Paginated query with customer join
-    const [rows] = await connection.execute(
-      `
+    const [rows] = await connection.execute(`
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
@@ -65,8 +64,7 @@ export async function createProduct(
 export async function getProductById(id: number) {
   try {
     // Modified to include customer data
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      `
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(`
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
@@ -124,11 +122,12 @@ export async function getProductsByCustomerId(customerId: number) {
   }
 }
 
-export async function getRandomProducts(count = 5) {
+export async function getRandomProducts(count: number | string) {
+  if (typeof count === "number") count = count.toString();
+
   try {
     // Get 5 unique random products with customer info
-    const [rows] = await connection.execute(
-      `
+    const [rows] = await connection.execute(`
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID

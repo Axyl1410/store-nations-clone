@@ -3,7 +3,7 @@ import { getCookie } from "cookies-next";
 
 export const takeCartId = async () => {
   const id = getCookie("idUser");
-  if (!id) return "";
+  if (!id) return;
 
   try {
     const response = await axios.post("/api/cart", { customerId: id });
@@ -12,5 +12,5 @@ export const takeCartId = async () => {
   } catch (error) {
     console.error("Error fetching cart ID:", error);
   }
-  return null;
+  return;
 };
