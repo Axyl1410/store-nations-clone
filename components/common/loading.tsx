@@ -1,6 +1,10 @@
 import { TextShimmer } from "../motion-primitives/text-shimmer";
 
-export default function Loading({ text = "Loading..." }: { text?: string }) {
+type LoadingProps = {
+  text?: string;
+};
+
+export default function Loading({ text = "Loading..." }: LoadingProps) {
   return (
     <TextShimmer className="font-mono text-sm" duration={1}>
       {text}

@@ -18,12 +18,7 @@ import {
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog";
 import axios from "@/lib/axios";
-import {
-  cn,
-  getErrorMessage,
-  isValidEmail,
-  isValidPassword,
-} from "@/lib/utils";
+import { getErrorMessage, isValidEmail, isValidPassword } from "@/lib/utils";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,10 +26,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
 
-export function SignUpForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function SignUpForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -101,7 +93,7 @@ export function SignUpForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card className="border shadow-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Create an account</CardTitle>

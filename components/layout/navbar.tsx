@@ -1,8 +1,9 @@
 "use client";
 
+import useToggle from "@/hooks/use-state-toggle";
 import axios from "@/lib/axios";
 import { getCookie } from "cookies-next";
-import { Loader2, LogOut } from "lucide-react";
+import { LogOut, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,13 +11,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AnimatedNumber } from "../motion-primitives/animated-number";
 import { ThemeToggle } from "../theme/theme-toggle";
+import { Button } from "../ui/button";
+import CartList from "../ui/cart-list";
 
 export default function Navbar() {
   const router = useRouter();
   const idUser = getCookie("idUser");
+  const cart = useToggle();
 
   const [itemNumber, setItemNumber] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
   async function handleLogout() {
@@ -32,12 +35,8 @@ export default function Navbar() {
 
   useEffect(() => {
     async function fetchCartItems() {
-      if (!idUser) {
-        setIsLoading(false);
-        return;
-      }
+      if (!idUser) return;
 
-      setIsLoading(true);
       setError(false);
 
       try {
@@ -46,12 +45,14 @@ export default function Navbar() {
       } catch (error) {
         console.error("Error fetching cart items:", error);
         setError(true);
-      } finally {
-        setIsLoading(false);
       }
     }
 
     fetchCartItems();
+
+    const intervalId = setInterval(fetchCartItems, 6000);
+
+    return () => clearInterval(intervalId);
   }, [idUser]);
 
   return (
@@ -73,35 +74,43 @@ export default function Navbar() {
             Shop
           </div>
         </Link>
-        <div className="flex h-full w-full items-center justify-end gap-2">
-          <div
+        <div className="flex h-full w-full items-center justify-end gap-1">
+          <Button
             onClick={handleLogout}
-            className="cursor-pointer transition-colors hover:text-red-500"
+            variant="ghost"
+            size="icon"
+            className="transition-colors hover:text-red-500"
+            aria-label="Logout"
           >
             <LogOut size={20} />
-          </div>
+          </Button>
+
           <ThemeToggle />
-          <Link href="/cart" className="relative">
-            <div className="relative flex cursor-pointer items-center justify-end">
-              <div className="border-primary border px-1 text-sm">
-                {isLoading ? (
-                  <Loader2 className="my-1 h-4 w-4 animate-spin" />
-                ) : error ? (
-                  <span className="text-red-500">!</span>
-                ) : (
-                  <AnimatedNumber
-                    springOptions={{
-                      bounce: 0,
-                      duration: 2000,
-                    }}
-                    value={itemNumber}
-                  />
-                )}
-              </div>
-            </div>
-          </Link>
+
+          <Button
+            onClick={cart.toggle}
+            variant="ghost"
+            className="group relative h-10 px-2"
+            aria-label={`Shopping cart with ${itemNumber} items`}
+          >
+            <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110" />
+            <span className="border-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border text-xs font-medium">
+              {error ? (
+                <span className="text-red-500">!</span>
+              ) : (
+                <AnimatedNumber
+                  springOptions={{
+                    bounce: 0,
+                    duration: 2000,
+                  }}
+                  value={itemNumber}
+                />
+              )}
+            </span>
+          </Button>
         </div>
       </div>
+      <CartList isOpen={cart.isOpen} onClose={cart.toggle} />
     </div>
   );
 }

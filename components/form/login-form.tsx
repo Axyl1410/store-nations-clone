@@ -11,12 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "@/lib/axios";
-import {
-  cn,
-  getErrorMessage,
-  isValidEmail,
-  isValidPassword,
-} from "@/lib/utils";
+import { getErrorMessage, isValidEmail, isValidPassword } from "@/lib/utils";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,10 +19,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,7 +85,7 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
