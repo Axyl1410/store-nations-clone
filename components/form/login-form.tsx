@@ -19,7 +19,7 @@ import { TextMorph } from "../motion-primitives/text-morph";
 import { ErrorMessage } from "./error-message";
 
 export function LoginForm() {
-  const { login, loading, success } = useLogin();
+  const { login, loading, success, error } = useLogin();
   const { validateAllFields, formData, errors, updateField } = useLoginForm();
   const router = useRouter();
 
@@ -27,6 +27,7 @@ export function LoginForm() {
     e.preventDefault();
 
     if (!validateAllFields()) {
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -35,6 +36,10 @@ export function LoginForm() {
     if (success || !loading) {
       toast.success("Login successful");
       router.push("/");
+    } else if (!success || error !== "") {
+      toast.error("An error occurred during login", {
+        description: error,
+      });
     }
   }
 

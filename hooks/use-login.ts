@@ -7,6 +7,7 @@ import { toast } from "sonner";
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const login = async (formData: LoginForm) => {
     setLoading(true);
@@ -18,6 +19,7 @@ export function useLogin() {
       toast.error("An error occurred during login", {
         description: getErrorMessage(error),
       });
+      setError(getErrorMessage(error));
       setSuccess(false);
     } finally {
       setLoading(false);
@@ -28,5 +30,6 @@ export function useLogin() {
     loading,
     login,
     success,
+    error,
   };
 }

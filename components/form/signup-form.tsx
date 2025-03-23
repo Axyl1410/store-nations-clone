@@ -20,12 +20,13 @@ import {
 import { useRegistration } from "@/hooks/use-registration";
 import { useSignupForm } from "@/hooks/use-signup-form";
 import Link from "next/link";
+import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
 import { ErrorMessage } from "./error-message";
 
 export function SignUpForm() {
   const { formData, errors, updateField, validateAllFields } = useSignupForm();
-  const { register, loading, success, setSuccess, navigateToLogin } =
+  const { register, loading, success, setSuccess, navigateToLogin, error } =
     useRegistration();
 
   async function handleSignUp(e: React.FormEvent) {
@@ -33,10 +34,20 @@ export function SignUpForm() {
 
     // Validate all fields before submission
     if (!validateAllFields()) {
+      toast.error("Please fill in all fields");
       return;
     }
 
     await register(formData);
+
+    if (success || !loading) {
+      toast.success("Account created successfully");
+      setSuccess(true);
+    } else if (!success && error !== "") {
+      toast.error("An error occurred during registration", {
+        description: error,
+      });
+    }
   }
 
   return (

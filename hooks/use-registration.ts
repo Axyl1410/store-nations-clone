@@ -8,6 +8,7 @@ import { toast } from "sonner";
 export function useRegistration() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const register = async (formData: SignupFormData) => {
@@ -16,12 +17,12 @@ export function useRegistration() {
     try {
       await axios.post("/api/register", formData);
       setSuccess(true);
-      return true;
     } catch (error) {
       toast.error("An error occurred during registration", {
         description: getErrorMessage(error),
       });
-      return false;
+      setError(getErrorMessage(error));
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
@@ -37,5 +38,6 @@ export function useRegistration() {
     success,
     setSuccess,
     navigateToLogin,
+    error,
   };
 }
