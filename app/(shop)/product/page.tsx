@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Product } from "@/types";
 import axios from "axios";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -37,7 +38,9 @@ export default function Page() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbLink asChild>
+                <Link href={"/"}>Home</Link>
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -46,20 +49,24 @@ export default function Page() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="border-primary flex h-16 items-center border-b">
-        <div className="grid w-full grid-cols-3">
-          <div className="border-primary flex h-16 items-center border-r px-4 uppercase">
+      <div className="border-primary flex items-center border-b md:h-16">
+        <div className="grid w-full grid-cols-1 md:grid-cols-3">
+          <div className="border-primary flex h-16 items-center px-4 uppercase md:border-r">
             Products
           </div>
-          <div className="border-primary border-r" />
-          <div className="flex h-16 cursor-not-allowed items-center justify-between px-4 uppercase">
+          <div className="border-primary hidden border-r md:block" />
+          <div className="border-primary flex h-16 cursor-not-allowed items-center justify-between border-t px-4 uppercase md:border-t-0">
             <p>Filter</p>
             <ChevronDown className="h-5 w-5" />
           </div>
         </div>
       </div>
       <div className={cn("grid-cols-3", products.length > 0 && "md:grid")}>
-        {products.length > 0 || !loading ? (
+        {loading ? (
+          <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
+            <Loading />
+          </div>
+        ) : products.length > 0 ? (
           products.map((product, index) => {
             // Calculate border classes based on position (0-indexed)
             const totalRows = Math.ceil(products.length / 3);
@@ -79,17 +86,13 @@ export default function Page() {
               <ProductCard
                 key={product.ProductID}
                 className={cn("border-primary", borderClass)}
-                Price={product.Price}
-                ProductID={product.ProductID}
-                ProductName={product.ProductName}
-                StockQuantity={product.StockQuantity}
-                ImageURL={product.ImageURL}
+                {...product}
               />
             );
           })
         ) : (
-          <div className="flex min-h-[calc(100vh-184px)] w-full items-center justify-center px-4 py-5">
-            <Loading />
+          <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
+            <p className="text-gray-500">No products available</p>
           </div>
         )}
       </div>

@@ -18,7 +18,26 @@ CREATE TABLE Products (
     Price DECIMAL(18,2) NOT NULL,
     StockQuantity INT NOT NULL,
     ImageURL VARCHAR(255),
-    Description TEXT
+    Description TEXT,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+) ENGINE=InnoDB;
+
+CREATE TABLE Cart (
+    CartID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT NOT NULL,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE CartItems (
+    CartItemID INT PRIMARY KEY AUTO_INCREMENT,
+    CartID INT NOT NULL,
+    ProductID INT NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(18,2) NOT NULL, 
+    FOREIGN KEY (CartID) REFERENCES Cart(CartID) ON DELETE CASCADE,
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE Orders (

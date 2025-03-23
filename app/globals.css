@@ -153,3 +153,9 @@
     scrollbar-width: thin;
   }
 }
+
+.data-\[vaul-drawer-direction\=right\]\:w-3\/4 {
+  &[data-vaul-drawer-direction="right"] {
+    width: 100%;
+  }
+}

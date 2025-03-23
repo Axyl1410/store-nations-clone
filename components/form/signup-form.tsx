@@ -17,63 +17,51 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog";
+import { useSignupForm } from "@/hooks/use-signup-form";
 import axios from "@/lib/axios";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { TextMorph } from "../motion-primitives/text-morph";
+import { ErrorMessage } from "./error-message";
 
-export function SignUpForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(false);
+export function SignUpForm() {
+  const { formData, errors, updateField, validateAllFields } = useSignupForm();
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-  }, []);
+  const navigateToLogin = () => {
+    router.push("/login");
+  };
 
-  async function handleSignIn(e: React.FormEvent) {
+  async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
+
+    // Validate all fields before submission
+    if (!validateAllFields()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await axios.post("/api/register", {
-        firstName,
-        lastName,
-        email,
-        password,
-        phone,
-        address,
-      });
-
-      toast.success("Account created successfully!");
-      setOpen(true);
-    } catch (error: unknown) {
-      console.error(
-        "Login error:",
-        error instanceof Error ? error.message : error,
-      );
-      toast.error("An error occurred during login", {
-        description: error instanceof Error ? error.message : String(error),
-      });
+      const res = await axios.post("/api/register", formData);
+      if (res.status === 201) {
+        toast.success("Account created successfully");
+        setSuccess(true);
+      }
+    } catch {
+      toast.error("An error occurred during registration");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card className="border shadow-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Create an account</CardTitle>
@@ -82,7 +70,7 @@ export function SignUpForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSignIn}>
+          <form onSubmit={handleSignUp}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-3">
                 <Button
@@ -119,9 +107,11 @@ export function SignUpForm({
                       id="firstName"
                       type="text"
                       placeholder="John"
-                      onChange={(e) => setFirstName(e.target.value)}
-                      required
+                      value={formData.firstName}
+                      onChange={(e) => updateField("firstName", e.target.value)}
+                      className={errors.firstName ? "border-red-500" : ""}
                     />
+                    <ErrorMessage error={errors.firstName} />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="lastName">Last name</Label>
@@ -129,9 +119,11 @@ export function SignUpForm({
                       id="lastName"
                       type="text"
                       placeholder="Doe"
-                      onChange={(e) => setLastName(e.target.value)}
-                      required
+                      value={formData.lastName}
+                      onChange={(e) => updateField("lastName", e.target.value)}
+                      className={errors.lastName ? "border-red-500" : ""}
                     />
+                    <ErrorMessage error={errors.lastName} />
                   </div>
                 </div>
                 <div className="grid gap-2">
@@ -140,9 +132,11 @@ export function SignUpForm({
                     id="email"
                     type="email"
                     placeholder="your@email.address"
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    value={formData.email}
+                    onChange={(e) => updateField("email", e.target.value)}
+                    className={errors.email ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.email} />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center justify-between">
@@ -154,9 +148,11 @@ export function SignUpForm({
                   <Input
                     id="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    value={formData.password}
+                    onChange={(e) => updateField("password", e.target.value)}
+                    className={errors.password ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.password} />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone number</Label>
@@ -164,9 +160,11 @@ export function SignUpForm({
                     id="phone"
                     type="tel"
                     placeholder="+1 (555) 000-0000"
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
+                    value={formData.phone}
+                    onChange={(e) => updateField("phone", e.target.value)}
+                    className={errors.phone ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.phone} />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="address">Address</Label>
@@ -174,16 +172,20 @@ export function SignUpForm({
                     id="address"
                     type="text"
                     placeholder="1234 Main St"
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
+                    value={formData.address}
+                    onChange={(e) => updateField("address", e.target.value)}
+                    className={errors.address ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.address} />
                 </div>
                 <Button
                   type="submit"
                   className="mt-2 w-full"
                   disabled={loading}
                 >
-                  {loading ? "Creating account..." : "Create Account"}
+                  <TextMorph>
+                    {loading ? "Creating account..." : "Create Account"}
+                  </TextMorph>
                 </Button>
               </div>
               <div className="text-center text-sm">
@@ -200,19 +202,19 @@ export function SignUpForm({
         </CardContent>
       </Card>
 
-      <ResponsiveDialog open={open} onOpenChange={setOpen}>
+      <ResponsiveDialog open={success} onOpenChange={setSuccess}>
         <ResponsiveDialogHeader>
-          <ResponsiveDialogTitle>Navigator to Login</ResponsiveDialogTitle>
+          <ResponsiveDialogTitle>Navigate to Login</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
-            Do you want go to login?
+            Your account has been created. Do you want to go to login?
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
         <ResponsiveDialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => setSuccess(false)}>
             Cancel
           </Button>
-          <Button onClick={() => router.push("/login")}>Continue</Button>
+          <Button onClick={navigateToLogin}>Continue</Button>
         </ResponsiveDialogFooter>
       </ResponsiveDialog>
     </div>

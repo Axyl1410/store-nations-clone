@@ -13,7 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   async function getProducts() {
-    const response = await axios.get("/api/product");
+    const response = await axios.get("/api/product/random");
 
     setProducts(response.data.data);
     setLoading(false);
@@ -31,7 +31,11 @@ export default function Home() {
         </div>
       </div>
       <div className={cn("grid-cols-3", products.length > 0 && "md:grid")}>
-        {products.length > 0 || !loading ? (
+        {loading ? (
+          <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
+            <Loading />
+          </div>
+        ) : products.length > 0 ? (
           products.map((product, index) => {
             // Calculate border classes based on position (0-indexed)
             const totalRows = Math.ceil(products.length / 3);
@@ -51,17 +55,13 @@ export default function Home() {
               <ProductCard
                 key={product.ProductID}
                 className={cn("border-primary", borderClass)}
-                Price={product.Price}
-                ProductID={product.ProductID}
-                ProductName={product.ProductName}
-                StockQuantity={product.StockQuantity}
-                ImageURL={product.ImageURL}
+                {...product}
               />
             );
           })
         ) : (
           <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
-            <Loading />
+            <p className="text-gray-500">No products available</p>
           </div>
         )}
       </div>

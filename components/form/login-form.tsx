@@ -10,67 +10,45 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLoginForm } from "@/hooks/use-login-form";
 import axios from "@/lib/axios";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { TextMorph } from "../motion-primitives/text-morph";
+import { ErrorMessage } from "./error-message";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+export function LoginForm() {
+  const { validateAllFields, formData, errors, updateField } = useLoginForm();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!validateAllFields()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/login", {
-        email,
-        password,
-      });
-
-      console.log("Login response:", response);
-
-      const data = response.data;
-
-      if (data) {
-        document.cookie = `authToken=${data.token}; path=/; max-age=${6 * 60 * 60}; SameSite=Lax`;
-
-        toast.success("Login successful!");
-        // Check for redirect param and use it
-        const params = new URLSearchParams(window.location.search);
-        const redirectPath = params.get("redirect") || "/";
-        router.push(redirectPath);
-      } else {
-        toast.error(data.message || "Login failed");
+      const res = await axios.post("/api/login", formData);
+      if (res.status === 200) {
+        toast.success("Logged in successfully");
+        router.push("/");
       }
-    } catch (error: unknown) {
-      console.error(
-        "Login error:",
-        error instanceof Error ? error.message : error,
-      );
-      toast.error("An error occurred during login", {
-        description: error instanceof Error ? error.message : String(error),
-      });
+    } catch {
+      toast.error("An error occurred during login");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
@@ -104,9 +82,11 @@ export function LoginForm({
                     id="email"
                     type="email"
                     placeholder="your@email.address"
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    onChange={(e) => updateField("email", e.target.value)}
+                    value={formData.email}
+                    className={errors.email ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.email} />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -121,12 +101,14 @@ export function LoginForm({
                   <Input
                     id="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    onChange={(e) => updateField("password", e.target.value)}
+                    value={formData.password}
+                    className={errors.password ? "border-red-500" : ""}
                   />
+                  <ErrorMessage error={errors.password} />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Logging in..." : "Login"}
+                  <TextMorph>{loading ? "Logging in..." : "Login"}</TextMorph>
                 </Button>
               </div>
               <div className="text-center text-sm">

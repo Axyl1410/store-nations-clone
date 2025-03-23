@@ -1,4 +1,5 @@
-import { loginWithEmailAndPassword } from "@/lib/mysql";
+import { createErrorResponse, getErrorMessage } from "@/lib/utils";
+import { loginWithEmailAndPassword } from "@/utils/customers";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,16 +18,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validation = loginSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "validation failed",
-          errors: validation.error.flatten().fieldErrors,
-        },
-        { status: 400 },
-      );
-    }
+    if (!validation.success)
+      return createErrorResponse("Invalid request data", 400);
 
     const login = validation.data as Login;
     const result = await loginWithEmailAndPassword(login.email, login.password);
@@ -44,28 +37,30 @@ export async function POST(request: Request) {
 
       const response = NextResponse.json({ result, token }, { status: 200 });
 
+      const cookieOptions = {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" as const,
+        path: "/",
+        maxAge: expiresIn,
+      };
+
       response.cookies.set({
         name: "authToken",
         value: token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/",
-        maxAge: expiresIn,
+        ...cookieOptions,
+      });
+
+      response.cookies.set({
+        name: "idUser",
+        value: result.CustomerID.toString(),
+        ...cookieOptions,
       });
 
       return response;
-    } else {
-      return NextResponse.json(
-        { success: false, message: "Login failed" },
-        { status: 401 },
-      );
     }
+    return createErrorResponse("Incorrect email or password", 401);
   } catch (error) {
-    console.error("Error getting customers:", error);
-    return NextResponse.json(
-      { success: false, message: "An error occurred during login" },
-      { status: 500 },
-    );
+    return createErrorResponse(getErrorMessage(error), 500);
   }
 }

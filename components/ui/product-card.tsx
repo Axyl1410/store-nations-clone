@@ -20,8 +20,8 @@ export default function ProductCard({
   StockQuantity,
 }: ProductCardProps) {
   return (
-    <Link href={`/product/${ProductID}`}>
-      <div className={cn("group flex flex-col", className)}>
+    <div className={cn("group flex flex-col", className)}>
+      <Link href={`/product/${ProductID}`}>
         <picture className="relative">
           <img
             className="aspect-square w-full object-cover"
@@ -39,30 +39,30 @@ export default function ProductCard({
             </div>
           </div>
         </picture>
-        <div className="bg-background">
-          <div
-            className={cn(
-              "border-primary h-[44px] items-center border-t opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-              StockQuantity > 0 && "flex",
-            )}
-          >
-            {StockQuantity > 0 ? (
-              <>
-                <div className="flex flex-1 items-center justify-center">
-                  {Price}$
-                </div>
-                <Button className="h-full w-full flex-1 rounded-none uppercase">
-                  add to cart
-                </Button>
-              </>
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                sold out
+      </Link>
+      <div className="bg-background">
+        <div
+          className={cn(
+            "border-primary h-[44px] items-center border-t opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+            StockQuantity > 0 && "flex",
+          )}
+        >
+          {StockQuantity > 0 ? (
+            <>
+              <div className="flex flex-1 items-center justify-center">
+                {Price}$
               </div>
-            )}
-          </div>
+              <Button className="h-full w-full flex-1 rounded-none uppercase">
+                add to cart
+              </Button>
+            </>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              sold out
+            </div>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

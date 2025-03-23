@@ -21,7 +21,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="border-primary border-t">
+      <div className="border-primary border-y">
         <div
           className="hover:bg-primary hover:text-secondary flex cursor-pointer items-center justify-center px-4 py-5 font-semibold tracking-wide uppercase duration-200 motion-safe:transition-colors"
           onClick={backToTop}
@@ -52,7 +52,7 @@ export default function Footer() {
             />
             <Button className="w-full rounded-none uppercase">subcribe</Button>
           </div>
-          <div className="border-primary flex flex-1 flex-col gap-2.5 border-t p-5 md:border-t-0 md:border-l [&_a]:block">
+          <div className="border-primary flex flex-1 flex-col gap-2.5 border-t p-5 md:border-t-0 md:border-l [&_a]:hover:underline">
             <Link href={"#"}>Terms of Service</Link>
             <Link href={"#"}>Privacy Policy</Link>
             <Link href={"#"}>Refund policy</Link>
