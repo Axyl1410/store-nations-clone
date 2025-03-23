@@ -10,77 +10,31 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "@/lib/axios";
-import { getErrorMessage, isValidEmail, isValidPassword } from "@/lib/utils";
-import { motion } from "motion/react";
+import { useLogin } from "@/hooks/use-login";
+import { useLoginForm } from "@/hooks/use-login-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
+import { ErrorMessage } from "./error-message";
 
 export function LoginForm() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
+  const { login, loading, success } = useLogin();
+  const { validateAllFields, formData, errors, updateField } = useLoginForm();
   const router = useRouter();
-
-  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    setEmail(value);
-
-    if (value && !isValidEmail(value))
-      setEmailError("Please enter a valid email address");
-    else setEmailError("");
-  }
-
-  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    setPassword(value);
-
-    if (value && !isValidPassword(value))
-      setPasswordError("Password must be at least 6 characters");
-    else setPasswordError("");
-  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!isValidEmail(email)) {
-      setEmailError("Please enter a valid email address");
+    if (!validateAllFields()) {
       return;
     }
 
-    if (!isValidPassword(password)) {
-      setPasswordError("Password must be at least 6 characters");
-      return;
-    }
+    await login(formData);
 
-    setLoading(true);
-
-    try {
-      const response = await axios.post("/api/login", {
-        email,
-        password,
-      });
-
-      const data = response.data;
-
-      if (data) {
-        toast.success("Login successful!");
-        // Check for redirect param and use it
-        const params = new URLSearchParams(window.location.search);
-        const redirectPath = params.get("redirect") || "/";
-        router.push(redirectPath);
-      } else toast.error(data.message || "Login failed");
-    } catch (error) {
-      toast.error("An error occurred during login", {
-        description: getErrorMessage(error),
-      });
-    } finally {
-      setLoading(false);
+    if (success || !loading) {
+      toast.success("Login successful");
+      router.push("/");
     }
   }
 
@@ -119,24 +73,11 @@ export function LoginForm() {
                     id="email"
                     type="email"
                     placeholder="your@email.address"
-                    onChange={handleEmailChange}
-                    value={email}
-                    required
-                    className={emailError ? "border-red-500" : ""}
+                    onChange={(e) => updateField("email", e.target.value)}
+                    value={formData.email}
+                    className={errors.email ? "border-red-500" : ""}
                   />
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{
-                      height: emailError ? "auto" : 0,
-                      opacity: emailError ? 1 : 0,
-                    }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    {emailError && (
-                      <p className="text-xs text-red-500">{emailError}</p>
-                    )}
-                  </motion.div>
+                  <ErrorMessage error={errors.email} />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -151,30 +92,13 @@ export function LoginForm() {
                   <Input
                     id="password"
                     type="password"
-                    onChange={handlePasswordChange}
-                    value={password}
-                    required
-                    className={passwordError ? "border-red-500" : ""}
+                    onChange={(e) => updateField("password", e.target.value)}
+                    value={formData.password}
+                    className={errors.password ? "border-red-500" : ""}
                   />
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{
-                      height: passwordError ? "auto" : 0,
-                      opacity: passwordError ? 1 : 0,
-                    }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    {passwordError && (
-                      <p className="text-xs text-red-500">{passwordError}</p>
-                    )}
-                  </motion.div>
+                  <ErrorMessage error={errors.password} />
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={loading || !!emailError || !!passwordError}
-                >
+                <Button type="submit" className="w-full" disabled={loading}>
                   <TextMorph>{loading ? "Logging in..." : "Login"}</TextMorph>
                 </Button>
               </div>

@@ -1,7 +1,7 @@
 import notFound from "@/app/not-found";
-import { Suspense } from "react";
 import { ProductWithFullName } from "@/types";
 import { getProductById } from "@/utils/products";
+import { Suspense } from "react";
 import { ProductClient } from "./client";
 import { ProductSkeleton } from "./skeleton";
 

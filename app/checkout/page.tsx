@@ -56,12 +56,12 @@ export default function Page() {
         </div>
       </div>
       <div className="border-accent border-b p-10 md:border-r md:border-b-0">
-        {/* Shipping and payment form will go here */}
         <h2 className="text-2xl font-semibold">Checkout</h2>
         <p className="text-muted-foreground mt-2">
           Complete your order by providing your shipping and payment details
         </p>
       </div>
+
       <div className="bg-accent sticky top-0 h-screen overflow-auto p-10">
         <div className="space-y-6">
           <h2 className="text-xl font-semibold">Order Summary</h2>

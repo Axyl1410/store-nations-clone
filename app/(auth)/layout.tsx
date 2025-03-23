@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          Axyl Inc.
+          Axyl Team.
         </a>
         {children}
         <div className="text-muted-foreground [&_a]:hover:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:cursor-not-allowed">
