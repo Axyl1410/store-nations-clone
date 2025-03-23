@@ -10,9 +10,4 @@ export type {
   ProductWithFullName,
 } from "./database";
 
-export type {
-  LoginForm,
-  LoginFormErrors,
-  SignupFormData,
-  SignupFormErrors,
-} from "./form";
+export type { LoginForm, SignupFormData } from "./form";

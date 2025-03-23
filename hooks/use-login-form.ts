@@ -1,5 +1,5 @@
 import { isValidEmail, isValidPassword } from "@/lib/utils";
-import { LoginForm, LoginFormErrors } from "@/types";
+import { LoginForm } from "@/types";
 import { useState } from "react";
 
 export function useLoginForm() {
@@ -8,7 +8,7 @@ export function useLoginForm() {
     password: "",
   });
 
-  const [errors, setErrors] = useState<LoginFormErrors>({
+  const [errors, setErrors] = useState<LoginForm>({
     email: "",
     password: "",
   });

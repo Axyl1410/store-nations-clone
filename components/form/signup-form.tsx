@@ -17,17 +17,24 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog";
-import { useRegistration } from "@/hooks/use-registration";
 import { useSignupForm } from "@/hooks/use-signup-form";
+import axios from "@/lib/axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
 import { ErrorMessage } from "./error-message";
 
 export function SignUpForm() {
   const { formData, errors, updateField, validateAllFields } = useSignupForm();
-  const { register, loading, success, setSuccess, navigateToLogin, error } =
-    useRegistration();
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const navigateToLogin = () => {
+    router.push("/login");
+  };
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -38,15 +45,18 @@ export function SignUpForm() {
       return;
     }
 
-    await register(formData);
+    setLoading(true);
 
-    if (success || !loading) {
-      toast.success("Account created successfully");
-      setSuccess(true);
-    } else if (!success && error !== "") {
-      toast.error("An error occurred during registration", {
-        description: error,
-      });
+    try {
+      const res = await axios.post("/api/register", formData);
+      if (res.status === 201) {
+        toast.success("Account created successfully");
+        setSuccess(true);
+      }
+    } catch {
+      toast.error("An error occurred during registration");
+    } finally {
+      setLoading(false);
     }
   }
 

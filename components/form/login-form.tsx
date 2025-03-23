@@ -10,17 +10,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLogin } from "@/hooks/use-login";
 import { useLoginForm } from "@/hooks/use-login-form";
+import axios from "@/lib/axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { TextMorph } from "../motion-primitives/text-morph";
 import { ErrorMessage } from "./error-message";
 
 export function LoginForm() {
-  const { login, loading, success, error } = useLogin();
   const { validateAllFields, formData, errors, updateField } = useLoginForm();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleLogin(e: React.FormEvent) {
@@ -31,15 +32,18 @@ export function LoginForm() {
       return;
     }
 
-    await login(formData);
+    setLoading(true);
 
-    if (success || !loading) {
-      toast.success("Login successful");
-      router.push("/");
-    } else if (!success || error !== "") {
-      toast.error("An error occurred during login", {
-        description: error,
-      });
+    try {
+      const res = await axios.post("/api/login", formData);
+      if (res.status === 200) {
+        toast.success("Logged in successfully");
+        router.push("/");
+      }
+    } catch {
+      toast.error("An error occurred during login");
+    } finally {
+      setLoading(false);
     }
   }
 

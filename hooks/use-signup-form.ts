@@ -1,5 +1,5 @@
 import { isValidEmail, isValidPassword } from "@/lib/utils";
-import { SignupFormData, SignupFormErrors } from "@/types";
+import { SignupFormData } from "@/types";
 import { useState } from "react";
 
 export function useSignupForm() {
@@ -14,7 +14,7 @@ export function useSignupForm() {
   });
 
   // Error states
-  const [errors, setErrors] = useState<SignupFormErrors>({
+  const [errors, setErrors] = useState<SignupFormData>({
     firstName: "",
     lastName: "",
     email: "",
