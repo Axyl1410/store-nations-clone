@@ -29,3 +29,13 @@ export const createErrorResponse = (message: string, status = 400) => {
 export const getErrorMessage = (error: unknown): string => {
   return error instanceof Error ? error.message : "Unknown error";
 };
+
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }).format(date);
+}

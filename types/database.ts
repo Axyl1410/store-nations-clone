@@ -28,6 +28,7 @@ export interface Order {
 }
 
 export interface OrderDetail {
+  ImageURL: string;
   OrderDetailID: number;
   OrderID: number;
   ProductID: number;

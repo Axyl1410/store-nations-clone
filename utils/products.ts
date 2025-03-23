@@ -2,6 +2,8 @@ import mysql from "mysql2/promise";
 import { connection } from "../lib/mysql";
 
 export async function getAllProducts() {
+  await connection.beginTransaction();
+
   try {
     // Modified query to join with Customers table
     const [rows] = await connection.execute(`
@@ -9,16 +11,22 @@ export async function getAllProducts() {
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
     `);
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 export async function getProductsWithPagination(limit = 10, offset = 0) {
+  await connection.beginTransaction();
+
   try {
     // Paginated query with customer join
-    const [rows] = await connection.execute(`
+    const [rows] = await connection.execute(
+      `
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
@@ -26,8 +34,11 @@ export async function getProductsWithPagination(limit = 10, offset = 0) {
     `,
       [limit, offset],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
@@ -35,12 +46,15 @@ export async function getProductsWithPagination(limit = 10, offset = 0) {
 export async function createProduct(
   productName: string,
   category: string,
+
   price: number,
   stockQuantity: number,
   imageUrl?: string,
   description?: string,
   customerId?: number,
 ) {
+  await connection.beginTransaction();
+
   try {
     // Updated to include CustomerID
     const [row] = await connection.execute(
@@ -55,16 +69,22 @@ export async function createProduct(
         customerId || null,
       ],
     );
+
+    await connection.commit();
     return row;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 export async function getProductById(id: number) {
+  await connection.beginTransaction();
+
   try {
     // Modified to include customer data
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(`
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+      `
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
@@ -72,8 +92,11 @@ export async function getProductById(id: number) {
     `,
       [id],
     );
+
+    await connection.commit();
     return rows[0] || null;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
@@ -88,6 +111,8 @@ export async function updateProduct(
   description?: string,
   customerId?: number,
 ) {
+  await connection.beginTransaction();
+
   try {
     // Updated to include CustomerID
     const [row] = await connection.execute(
@@ -103,31 +128,41 @@ export async function updateProduct(
         id,
       ],
     );
+
+    await connection.commit();
     return row;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 // New function to get products by customer ID
 export async function getProductsByCustomerId(customerId: number) {
+  await connection.beginTransaction();
+
   try {
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Products WHERE CustomerID = ?",
       [customerId],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 export async function getRandomProducts(count: number | string) {
   if (typeof count === "number") count = count.toString();
+  await connection.beginTransaction();
 
   try {
     // Get 5 unique random products with customer info
-    const [rows] = await connection.execute(`
+    const [rows] = await connection.execute(
+      `
       SELECT p.*, c.FullName
       FROM Products p
       LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
@@ -136,8 +171,11 @@ export async function getRandomProducts(count: number | string) {
     `,
       [count],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }

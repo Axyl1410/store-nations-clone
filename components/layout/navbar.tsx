@@ -56,7 +56,7 @@ export default function Navbar() {
   }, [idUser]);
 
   return (
-    <div className="bg-background text-primary border-primary sticky inset-x-0 top-0 z-50 container mx-auto border-b">
+    <div className="bg-background text-primary border-primary sticky inset-x-0 top-0 z-40 container mx-auto border-b">
       <div className="flex h-[55px] w-full items-center pr-4 pl-1">
         <div className="flex h-full w-full items-center justify-start text-2xl font-black text-orange-600">
           <Link href="/">
@@ -75,15 +75,51 @@ export default function Navbar() {
           </div>
         </Link>
         <div className="flex h-full w-full items-center justify-end gap-1">
-          <Button
-            onClick={handleLogout}
-            variant="ghost"
-            size="icon"
-            className="transition-colors hover:text-red-500"
-            aria-label="Logout"
-          >
-            <LogOut size={20} />
-          </Button>
+          {idUser ? (
+            <>
+              <Link href="/orders">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="transition-colors hover:text-blue-500"
+                  aria-label="My Orders"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="16" height="20" x="4" y="2" rx="2" />
+                    <path d="M8 6h8" />
+                    <path d="M8 10h8" />
+                    <path d="M8 14h8" />
+                    <path d="M8 18h8" />
+                  </svg>
+                </Button>
+              </Link>
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="icon"
+                className="transition-colors hover:text-red-500"
+                aria-label="Logout"
+              >
+                <LogOut size={20} />
+              </Button>
+            </>
+          ) : (
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="h-9">
+                Login
+              </Button>
+            </Link>
+          )}
 
           <ThemeToggle />
 

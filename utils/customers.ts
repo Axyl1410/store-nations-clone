@@ -6,6 +6,8 @@ export async function loginWithEmailAndPassword(
   email: string,
   password: string,
 ) {
+  await connection.beginTransaction();
+
   try {
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Customers WHERE Email = ? LIMIT 1",
@@ -17,8 +19,10 @@ export async function loginWithEmailAndPassword(
 
     if (!passwordMatch || !user) throw new Error("Invalid email or password");
 
+    await connection.commit();
     return user;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
@@ -30,6 +34,8 @@ export async function createCustomer(
   phone: string,
   address: string,
 ) {
+  await connection.beginTransaction();
+
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -39,8 +45,11 @@ export async function createCustomer(
       "INSERT INTO Customers (FullName, Email, Password, PhoneNumber, Address, CreateAt) VALUES (?, ?, ?, ?, ?, ?)",
       [fullname, email, hashedPassword, phone, address, createdAt],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
@@ -52,37 +61,52 @@ export async function updateCustomer(
   phone: string,
   address: string,
 ) {
+  await connection.beginTransaction();
+
   try {
     const [rows] = await connection.execute(
       "UPDATE Customers SET FullName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE ID = ?",
       [fullname, email, phone, address, id],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 export async function deleteCustomer(id: number) {
+  await connection.beginTransaction();
+
   try {
     const [rows] = await connection.execute(
       "DELETE FROM Customers WHERE ID = ?",
       [id],
     );
+
+    await connection.commit();
     return rows;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }
 
 export async function getCustomerById(id: number) {
+  await connection.beginTransaction();
+
   try {
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Customers WHERE ID = ?",
       [id],
     );
+
+    await connection.commit();
     return rows[0] || null;
   } catch (error) {
+    await connection.rollback();
     throw error;
   }
 }

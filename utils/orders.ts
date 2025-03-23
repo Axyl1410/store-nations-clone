@@ -87,10 +87,10 @@ export async function createOrderFromCart(
     await connection.beginTransaction();
 
     try {
-      // Get cart items
+      // Get cart items with product stock information
       const [cartItems] = await connection.execute<mysql.RowDataPacket[]>(
         `
-        SELECT ci.*, p.ProductName
+        SELECT ci.*, p.ProductName, p.StockQuantity
         FROM CartItems ci
         JOIN Products p ON ci.ProductID = p.ProductID
         WHERE ci.CartID = ?
@@ -100,6 +100,15 @@ export async function createOrderFromCart(
 
       if (!cartItems || cartItems.length === 0) {
         throw new Error("Cart is empty");
+      }
+
+      // Validate stock for all items before proceeding
+      for (const item of cartItems as any[]) {
+        if (item.Quantity > item.StockQuantity) {
+          throw new Error(
+            `Not enough stock for ${item.ProductName}. Only ${item.StockQuantity} available.`,
+          );
+        }
       }
 
       // Calculate total amount

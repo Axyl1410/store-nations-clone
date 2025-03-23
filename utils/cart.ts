@@ -104,7 +104,7 @@ export async function addToCart(
   quantity: number,
 ) {
   try {
-    // Get product price
+    // Get product price and stock quantity
     const [product] = await connection.execute<mysql.RowDataPacket[]>(
       "SELECT * FROM Products WHERE ProductID = ?",
       [productId],
@@ -116,6 +116,7 @@ export async function addToCart(
     }
 
     const productPrice = product[0].Price;
+    const availableStock = product[0].StockQuantity;
 
     // Check if product already exists in cart
     const [existing] = await connection.execute<mysql.RowDataPacket[]>(
@@ -124,8 +125,13 @@ export async function addToCart(
     );
 
     if (existing && existing.length > 0) {
-      // Update quantity if product already in cart
+      // Calculate new total quantity
       const newQuantity = existing[0].Quantity + quantity;
+
+      // Check if we have enough stock
+      if (newQuantity > availableStock) {
+        throw new Error(`Only ${availableStock} items available in stock`);
+      }
 
       await connection.execute(
         "UPDATE CartItems SET Quantity = ? WHERE CartItemID = ?",
@@ -137,6 +143,11 @@ export async function addToCart(
         Quantity: newQuantity,
       };
     } else {
+      // Check if we have enough stock for new cart item
+      if (quantity > availableStock) {
+        throw new Error(`Only ${availableStock} items available in stock`);
+      }
+
       // Add new cart item
       const [result] = await connection.execute<mysql.RowDataPacket[]>(
         "INSERT INTO CartItems (CartID, ProductID, Quantity, Price) VALUES (?, ?, ?, ?)",
@@ -171,7 +182,7 @@ export async function updateCartItem(cartItemId: number, quantity: number) {
   try {
     // Check if item exists
     const [item] = await connection.execute<mysql.RowDataPacket[]>(
-      "SELECT * FROM CartItems WHERE CartItemID = ?",
+      "SELECT ci.*, p.StockQuantity FROM CartItems ci JOIN Products p ON ci.ProductID = p.ProductID WHERE ci.CartItemID = ?",
       [cartItemId],
     );
 
@@ -185,6 +196,11 @@ export async function updateCartItem(cartItemId: number, quantity: number) {
         cartItemId,
       ]);
       return { deleted: true, cartItemId };
+    }
+
+    // Check if requested quantity exceeds available stock
+    if (quantity > item[0].StockQuantity) {
+      throw new Error(`Only ${item[0].StockQuantity} items available in stock`);
     }
 
     // Update the quantity

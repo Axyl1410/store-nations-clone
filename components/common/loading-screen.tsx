@@ -2,7 +2,7 @@ import styles from "@/styles/loading-screen.module.scss";
 
 const LoadingScreen = () => {
   return (
-    <div className="bg-background fixed top-0 left-0 z-30 h-full w-full">
+    <div className="bg-background fixed top-0 left-0 z-50 h-full w-full">
       <svg
         className={styles.tea}
         width="37"
