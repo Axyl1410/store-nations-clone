@@ -41,13 +41,15 @@ export interface Cart {
   CreatedAt: string | Date;
 }
 
-export interface CartItem {
+export type CartItem = {
   CartItemID: number;
-  CartID: number;
   ProductID: number;
   Quantity: number;
   Price: number;
-}
+  ProductName: string;
+  Category: string;
+  ImageURL?: string;
+};
 
 export interface Order {
   OrderID: number;

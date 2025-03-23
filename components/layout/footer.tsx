@@ -21,7 +21,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="border-primary border-t">
+      <div className="border-primary border-y">
         <div
           className="hover:bg-primary hover:text-secondary flex cursor-pointer items-center justify-center px-4 py-5 font-semibold tracking-wide uppercase duration-200 motion-safe:transition-colors"
           onClick={backToTop}
