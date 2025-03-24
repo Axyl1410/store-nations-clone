@@ -76,6 +76,16 @@ export interface CartItemWithProduct extends CartItem {
   ImageURL?: string;
 }
 
+export interface Comment {
+  CommentID: number;
+  CustomerID: number;
+  ProductID: number;
+  FullName: string;
+  ProductName: string;
+  Content: string;
+  CreatedAt: string;
+}
+
 export type CustomerWithoutPassword = Omit<Customer, "Password">;
 
 export type ProductWithFullName = Product & { FullName: string };
