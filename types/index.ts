@@ -2,6 +2,7 @@ export type {
   Cart,
   CartItem,
   CartItemWithProduct,
+  Comment,
   Customer,
   CustomerWithoutPassword,
   Order,
