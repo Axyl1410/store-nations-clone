@@ -57,6 +57,12 @@ export async function POST(request: Request) {
         ...cookieOptions,
       });
 
+      response.cookies.set({
+        name: "fullname",
+        value: result.FullName,
+        ...cookieOptions,
+      });
+
       return response;
     }
     return createErrorResponse("Incorrect email or password", 401);

@@ -3,25 +3,26 @@ import mysql from "mysql2/promise";
 
 interface getComment {
   productID: number;
-  customerID: number;
 }
 
 interface createComment extends getComment {
-  comment: string;
+  customerID: number;
+  content: string;
+  fullname: string;
 }
 
-//todo fix later
 export async function createComment({
   productID,
   customerID,
-  comment,
+  content,
+  fullname,
 }: createComment) {
   await connection.beginTransaction();
 
   try {
     const [rows] = await connection.execute(
-      "INSERT INTO Comments (ProductID, CustomerID, Comment) VALUES (?, ?, ?)",
-      [productID, customerID, comment],
+      "INSERT INTO Comments (ProductID, CustomerID, FullName, Content) VALUES (?, ?, ?, ?)",
+      [productID, customerID, fullname, content],
     );
 
     await connection.commit();
@@ -32,13 +33,13 @@ export async function createComment({
   }
 }
 
-export async function getComment({ productID, customerID }: getComment) {
+export async function getComment({ productID }: getComment) {
   await connection.beginTransaction();
 
   try {
     const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      "SELECT * FROM Comments WHERE ProductID = ? AND CustomerID = ?",
-      [productID, customerID],
+      "SELECT * FROM Comments WHERE ProductID = ?",
+      [productID],
     );
 
     await connection.commit();
