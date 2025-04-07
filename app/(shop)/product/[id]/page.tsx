@@ -1,6 +1,6 @@
 import notFound from "@/app/not-found";
+import { getProductById } from "@/services/products";
 import { ProductWithFullName } from "@/types";
-import { getProductById } from "@/utils/products";
 import { Suspense } from "react";
 import { ProductClient } from "./client";
 import { ProductSkeleton } from "./skeleton";

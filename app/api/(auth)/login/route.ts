@@ -1,5 +1,5 @@
 import { createErrorResponse, getErrorMessage } from "@/lib/utils";
-import { loginWithEmailAndPassword } from "@/utils/customers";
+import { loginWithEmailAndPassword } from "@/services/customers";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";

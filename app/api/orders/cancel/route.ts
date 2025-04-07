@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { cancelOrder } from "@/utils/orders";
+import { cancelOrder } from "@/services/orders";
 import { z } from "zod";
 
 // Cancel order schema

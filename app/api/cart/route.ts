@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { clearCart, deleteCart, getOrCreateCart } from "@/utils/cart";
+import { clearCart, deleteCart, getOrCreateCart } from "@/services/cart";
 import { z } from "zod";
 
 // Get cart schema

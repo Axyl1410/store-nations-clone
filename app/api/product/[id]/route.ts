@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { getProductById } from "@/utils/products";
+import { getProductById } from "@/services/products";
 
 export async function GET(
   _request: Request,

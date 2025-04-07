@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { createComment, getComment } from "@/utils/comment";
+import { createComment, getComment } from "@/services/comment";
 import { z } from "zod";
 
 const post = z.object({

@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { createCustomer } from "@/utils/customers";
+import { createCustomer } from "@/services/customers";
 import { z } from "zod";
 
 const registerSchema = z.object({

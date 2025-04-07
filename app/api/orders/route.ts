@@ -9,7 +9,7 @@ import {
   getAllOrders,
   getOrderById,
   updateOrderStatus,
-} from "@/utils/orders";
+} from "@/services/orders";
 import { z } from "zod";
 
 // Get orders schema
