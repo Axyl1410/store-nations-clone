@@ -2,22 +2,24 @@
 
 import useToggle from "@/hooks/use-state-toggle";
 import axios from "@/lib/axios";
+import { cn } from "@/lib/utils";
 import { getCookie } from "cookies-next";
-import { LogOut, ShoppingBag } from "lucide-react";
+import { Menu, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AnimatedNumber } from "../motion-primitives/animated-number";
-import { ThemeToggle } from "../theme/theme-toggle";
 import { Button } from "../ui/button";
 import CartList from "../ui/cart-list";
+import SidebarMenu from "./sidebar-menu";
 
 export default function Navbar() {
   const router = useRouter();
   const idUser = getCookie("idUser");
   const cart = useToggle();
+  const menu = useToggle();
 
   const [itemNumber, setItemNumber] = useState(0);
   const [error, setError] = useState(false);
@@ -57,76 +59,30 @@ export default function Navbar() {
 
   return (
     <div className="bg-background text-primary border-primary sticky inset-x-0 top-0 z-40 container mx-auto border-b">
-      <div className="flex h-[55px] w-full items-center pr-4 pl-1">
-        <div className="flex h-full w-full items-center justify-start text-2xl font-black text-orange-600">
-          <Link href="/">
+      <div className="flex h-[55px] w-full items-center justify-between px-4">
+        <div className="sm:w-1/3">
+          <div onClick={menu.toggle} className="w-fit cursor-pointer">
+            <Menu className="h-5 w-5" />
+          </div>
+        </div>
+        <div className="flex h-full w-full items-center justify-start text-2xl font-black sm:w-1/3">
+          <Link href="/" className="flex w-full items-center justify-center">
             <Image
-              src={"/nationorange.avif"}
+              src={"/navy-navy.avif"}
               alt="Nation Store"
-              width={130}
-              height={130}
+              width={150}
+              height={150}
               onContextMenu={(e) => e.preventDefault()}
+              className="-mt-3"
             />
           </Link>
         </div>
-        <Link href={"/product"}>
-          <div className="hidden h-full w-full items-center justify-center text-sm sm:flex">
-            Shop
-          </div>
-        </Link>
-        <div className="flex h-full w-full items-center justify-end gap-1">
-          {idUser ? (
-            <>
-              <Link href="/orders">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="transition-colors hover:text-blue-500"
-                  aria-label="My Orders"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect width="16" height="20" x="4" y="2" rx="2" />
-                    <path d="M8 6h8" />
-                    <path d="M8 10h8" />
-                    <path d="M8 14h8" />
-                    <path d="M8 18h8" />
-                  </svg>
-                </Button>
-              </Link>
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                size="icon"
-                className="transition-colors hover:text-red-500"
-                aria-label="Logout"
-              >
-                <LogOut size={20} />
-              </Button>
-            </>
-          ) : (
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="h-9">
-                Login
-              </Button>
-            </Link>
-          )}
 
-          <ThemeToggle />
-
+        <div className="flex h-full items-center justify-end gap-1 sm:w-1/3">
           <Button
             onClick={cart.toggle}
             variant="ghost"
-            className="group relative h-10 px-2"
+            className="group relative h-10"
             aria-label={`Shopping cart with ${itemNumber} items`}
           >
             <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110" />
@@ -147,6 +103,36 @@ export default function Navbar() {
         </div>
       </div>
       <CartList isOpen={cart.isOpen} onClose={cart.toggle} />
+      <SidebarMenu isOpen={menu.isOpen} onClose={menu.toggle} />
+      {/* Menu */}
+      <div
+        className={cn(
+          "bg-background border-primary absolute inset-x-0 top-[56px] z-30 overflow-hidden transition-all duration-300 lg:border-b",
+          menu.isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+        )}
+      >
+        <div className="container mx-auto" onClick={menu.toggle}>
+          <div className="hidden grid-cols-4 lg:grid">
+            <Link href="/product">
+              <div className="border-primary border-r p-5 font-bold">Shop</div>
+            </Link>
+            <Link href="/orders">
+              <div className="border-primary border-r p-5 font-bold">
+                Orders
+              </div>
+            </Link>
+            <div className="border-primary border-r p-5 font-bold">
+              About us
+            </div>
+            <div
+              className="cursor-pointer p-5 font-bold"
+              onClick={handleLogout}
+            >
+              Log out
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

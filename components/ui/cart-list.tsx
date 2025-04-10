@@ -153,7 +153,7 @@ export default function CartList({ isOpen, onClose }: CartListProps) {
               <div className="flex flex-col items-center justify-center gap-4 py-8">
                 <ShoppingCart className="text-muted-foreground h-12 w-12" />
                 <h3 className="text-lg font-semibold">Your cart is empty</h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-center text-sm">
                   Looks like you haven&apos;t added anything to your cart yet.
                 </p>
                 <Button

@@ -39,7 +39,7 @@ export default function RootLayout({
         <ThemeProvider defaultTheme="system">
           <main>{children}</main>
         </ThemeProvider>
-        <Toaster closeButton position="top-left" />
+        <Toaster closeButton position="bottom-right" />
       </body>
     </html>
   );

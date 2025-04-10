@@ -97,7 +97,7 @@ export default function Page() {
         <div className="w-fit">
           <Link href="/">
             <Image
-              src={"/nationorange.avif"}
+              src={"/navy-navy.avif"}
               alt="Nation Store"
               width={180}
               height={60}

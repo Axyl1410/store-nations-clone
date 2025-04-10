@@ -88,10 +88,11 @@ export default function Page() {
         </Breadcrumb>
       </div>
       <div className="border-primary flex items-center border-b md:h-16">
-        <div className="grid w-full grid-cols-1 md:grid-cols-3">
+        <div className="grid w-full grid-cols-1 md:grid-cols-4">
           <div className="border-primary flex h-16 items-center px-4 uppercase md:border-r">
             Products
           </div>
+          <div className="border-primary hidden border-r md:block" />
           <div className="border-primary hidden border-r md:block" />
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -171,7 +172,7 @@ export default function Page() {
         </div>
       </div>
       <div
-        className={cn("grid-cols-3", filteredProducts.length > 0 && "md:grid")}
+        className={cn("grid-cols-4", filteredProducts.length > 0 && "md:grid")}
       >
         {loading ? (
           <div className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center px-4 py-5">
@@ -185,12 +186,8 @@ export default function Page() {
             const isLastRow = currentRow === totalRows;
 
             const borderClass = cn(
-              index % 4 === 0
-                ? "md:border-r" // Items 1, 5, 9, etc. (index 0, 4, 8)
-                : index % 4 === 2
-                  ? "md:border-l" // Items 3, 7, 11, etc. (index 2, 6, 10)
-                  : "",
-              !isLastRow && "md:border-b", // Add bottom border if not in last row
+              (index + 1) % 4 !== 0 ? "md:border-r" : "",
+              !isLastRow && "md:border-b",
             );
 
             return (

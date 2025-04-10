@@ -140,7 +140,7 @@ export function ProductClient({ product }: { product: ProductWithFullName }) {
               <MorphingDialogTrigger>
                 <MorphingDialogImage
                   src={`https:${product.ImageURL}`}
-                  className="cursor-pointer"
+                  className="border-primary cursor-pointer border-b"
                   alt={product.ProductName}
                 />
               </MorphingDialogTrigger>
