@@ -106,6 +106,9 @@ export default function Page() {
         </div>
       </div>
       <div className="border-accent border-b p-10 md:border-r md:border-b-0">
+        <Link href={"/"}>
+          <p className="hover:underline">Back to home</p>
+        </Link>
         <h2 className="text-2xl font-semibold">Checkout</h2>
         <p className="text-muted-foreground mt-2">
           Complete your order by providing your shipping and payment details

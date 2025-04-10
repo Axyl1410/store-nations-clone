@@ -1,5 +1,5 @@
 import { createErrorResponse, getErrorMessage } from "@/lib/utils";
-import { loginWithEmailAndPassword } from "@/utils/customers";
+import { loginWithEmailAndPassword } from "@/services/customers";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -54,6 +54,12 @@ export async function POST(request: Request) {
       response.cookies.set({
         name: "idUser",
         value: result.CustomerID.toString(),
+        ...cookieOptions,
+      });
+
+      response.cookies.set({
+        name: "fullname",
+        value: result.FullName,
         ...cookieOptions,
       });
 

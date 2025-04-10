@@ -24,8 +24,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Separator } from "./separator";
 import Loading from "../common/loading";
+import { Separator } from "./separator";
 
 type CartItem = {
   CartItemID: number;
@@ -121,11 +121,6 @@ export default function CartList({ isOpen, onClose }: CartListProps) {
     } finally {
       setUpdating(null);
     }
-  };
-
-  const handleCheckout = () => {
-    onClose();
-    router.push("/checkout");
   };
 
   return (
@@ -264,16 +259,14 @@ export default function CartList({ isOpen, onClose }: CartListProps) {
                   ${subtotal}
                 </span>
               </div>
-              <Button
-                onClick={handleCheckout}
-                disabled={cartItems.length === 0 || loading}
-                className="w-full"
-              >
-                Checkout
-              </Button>
-              <Button variant="outline" onClick={onClose} className="w-full">
-                Continue Shopping
-              </Button>
+              <Link href={"/checkout"} onClick={onClose}>
+                <Button
+                  disabled={cartItems.length === 0 || loading}
+                  className="w-full"
+                >
+                  Checkout
+                </Button>
+              </Link>
             </div>
           </DrawerFooter>
         </div>

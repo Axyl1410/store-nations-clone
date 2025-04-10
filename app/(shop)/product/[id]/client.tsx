@@ -17,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { CommentSection } from "@/components/ui/comment";
 import {
   Select,
   SelectContent,
@@ -259,6 +260,8 @@ export function ProductClient({ product }: { product: ProductWithFullName }) {
               <p className="text-sm text-gray-700">{product.Description}</p>
             </div>
           )}
+
+          <CommentSection productID={product.ProductID} />
         </div>
       </div>
     </>

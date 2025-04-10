@@ -3,7 +3,7 @@ import {
   createResponse,
   getErrorMessage,
 } from "@/lib/utils";
-import { getRandomProducts } from "@/utils/products";
+import { getRandomProducts } from "@/services/products";
 
 export const revalidate = 3600;
 

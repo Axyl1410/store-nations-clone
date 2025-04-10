@@ -70,6 +70,16 @@ export interface OrderDetail {
   Category?: string; // Thêm từ JOIN
 }
 
+export interface Comment {
+  CommentID: number;
+  CustomerID: number;
+  ProductID: number;
+  FullName: string;
+  ProductName: string;
+  Content: string;
+  CreatedAt: string;
+}
+
 export interface CartItemWithProduct extends CartItem {
   ProductName: string;
   Category: string;
